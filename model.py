@@ -18,12 +18,19 @@ class User(db.Model):
     __tablename__ = "users"
 
     user_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    email = db.Column(db.String(64), nullable=False)
-    password = db.Column(db.String(64), nullable=False)
+    username = db.Column(db.String(25), nullable=False, unique=True)
+    email = db.Column(db.String(64), nullable=False, unique=True)
+    password = db.Column(db.String(64), nullable=False, unique=True)
+
+    def __repr__(self):
+        """Provide helpful representation when printed."""
+
+        return "<User user_id=%s email=%s password=%s>" % (
+            self.user_id, self.email, self.password)
 
 
 class Attendee(db.Model):
-    '''Attendees of an event'''
+    '''Attendee of an event'''
 
     __tablename__ = 'attendees'
 
@@ -34,12 +41,43 @@ class Attendee(db.Model):
     street = db.Column(db.String(64), nullable=True)
     city = db.Column(db.String(64), nullable=True)
     state = db.Column(db.String(64), nullable=True)
-    zip = db.Column(db.Integer, nullable=True)
-    vip = db.Column(db.Boolean, nullable=True)
+    zipcode = db.Column(db.Integer, nullable=True)
+    vip_status = db.Column(db.Boolean, nullable=True)
     meal_request = db.Column(String(64), nullable=True)
     note = db.Column(String(100), nullable=True)
 
+    def __repr__(self):
+        """Provide helpful representation when printed."""
 
+        return "<Attendee attendee_id=%s first_name=%s last_name=%s>" % (
+            self.attendee_id, self.first_name, self.last_name)
+
+class Event(db.Model):
+
+    __tablename__ = 'events'
+
+    event_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    event_name = db.Column(db.String(64), nullable=False)
+    event_description = db.Column(db.String(150), nullable=True)
+    location = db.Column(db.String(50), nullable=True)
+    time = db.Column(db.DateTime, nullable=True)
+
+    def __repr__(self):
+        """Provide helpful representation when printed."""
+
+        return "<Event event_id=%s event_name=%s event_description=%s>" % (
+            self.event_id, self.event_name, self.event_description)
+
+class Table(db.Model):
+    '''Table description'''
+
+    __tablename__ = 'tables'
+
+    table_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    table_name = db.Column(db.String(64), nullable=True, unique=True)
+    max_seats = db.Column(db.Integer, nullable=True)
+    #TODO!
+    event_id = db.Column(db.Integer, db.ForeignKey())
 
 ##############################################################################
 # Helper functions

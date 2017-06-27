@@ -46,6 +46,10 @@ class Attendee(db.Model):
     meal_request = db.Column(String(64), nullable=True)
     note = db.Column(String(100), nullable=True)
 
+    events = db.relationship('Event',
+                            secondary='EventAttendeeSeat' 
+                            backref=db.backref('attendees', order_by=attendee_id))
+
     def __repr__(self):
         """Provide helpful representation when printed."""
 
@@ -77,7 +81,7 @@ class Table(db.Model):
     table_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     table_name = db.Column(db.String(64), nullable=True, unique=True)
     max_seats = db.Column(db.Integer, nullable=True)
-    event_id = db.Column(db.Integer, db.ForeignKey('events.event_id'), index=True)
+    event_id = db.Column(db.Integer, db.ForeignKey('events.event_id'))
 
     event = db.relationship('Event', 
                             backref=db.backref('tables', order_by=table_id))
@@ -94,9 +98,10 @@ class EventAttendeeSeat(db.Model):
     __tablename__ = 'Events_Attendees_Seats' 
 
     event_attendee_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    event_id = db.Column(db.Integer, db.ForeignKey('events.event_id'), index=True)
-    attendee_id = db.Column(db.Integer, db.ForeignKey('attendees.attendee_id'), index=True)
-    table_id = db.Column(db.Integer, db.ForeignKey('table.table_id'), index=True)
+    event_id = db.Column(db.Integer, db.ForeignKey('events.event_id'))
+    attendee_id = db.Column(db.Integer, db.ForeignKey('attendees.attendee_id'))
+    table_id = db.Column(db.Integer, db.ForeignKey('table.table_id'), nullable=True)
+
 
     def __repr__(self):
         """Provide helpful representation when printed."""

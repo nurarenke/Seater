@@ -53,6 +53,7 @@ class Attendee(db.Model):
             self.attendee_id, self.first_name, self.last_name)
 
 class Event(db.Model):
+    '''Event description'''
 
     __tablename__ = 'events'
 
@@ -76,8 +77,33 @@ class Table(db.Model):
     table_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     table_name = db.Column(db.String(64), nullable=True, unique=True)
     max_seats = db.Column(db.Integer, nullable=True)
-    #TODO!
-    event_id = db.Column(db.Integer, db.ForeignKey())
+    event_id = db.Column(db.Integer, db.ForeignKey('events.event_id'), index=True)
+
+    event = db.relationship('Event', 
+                            backref=db.backref('tables', order_by=table_id))
+
+    def __repr__(self):
+        """Provide helpful representation when printed."""
+
+        return "<Event table_id=%s table_name=%s max_seats=%s>" % (
+            self.table_id, self.table_name, self.max_seats)
+
+class EventAttendeeSeat(db.Model):
+    '''many to many association table for Event, Attendee, and Seating'''
+
+    __tablename__ = 'Events_Attendees_Seats' 
+
+    event_attendee_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    event_id = db.Column(db.Integer, db.ForeignKey('events.event_id'), index=True)
+    attendee_id = db.Column(db.Integer, db.ForeignKey('attendees.attendee_id'), index=True)
+    table_id = db.Column(db.Integer, db.ForeignKey('table.table_id'), index=True)
+
+    def __repr__(self):
+        """Provide helpful representation when printed."""
+
+        return "<EventAttendeeSeat event_attendee_id=%s event_id=%s attendee_id=%s table_id=%s>" % (
+            self.event_attendee_id, self.event_id, self.attendee_id self.table_id)
+
 
 ##############################################################################
 # Helper functions

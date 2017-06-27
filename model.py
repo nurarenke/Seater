@@ -50,6 +50,10 @@ class Attendee(db.Model):
                             secondary='EventAttendeeSeat' 
                             backref=db.backref('attendees', order_by=attendee_id))
 
+    seating_relationships = db.relationship('SeatingRelationship',
+                            secondary='EventAttendeeSeat' 
+                            backref=db.backref('attendees', order_by=attendee_id))
+
     def __repr__(self):
         """Provide helpful representation when printed."""
 
@@ -108,6 +112,22 @@ class EventAttendeeSeat(db.Model):
 
         return "<EventAttendeeSeat event_attendee_id=%s event_id=%s attendee_id=%s table_id=%s>" % (
             self.event_attendee_id, self.event_id, self.attendee_id self.table_id)
+
+class SeatingRelationship(db.Model):
+    '''create relationships between attendees in order to seat them'''
+
+    __tablename__ = seating_relationships
+
+    seating_relationship_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    event_attendee_id_one = db.Column(db.Integer, db.ForeignKey('attendees.attendee_id'))
+    event_attendee_id_two = db.Column(db.Integer, db.ForeignKey('attendees.attendee_id'))
+    relationship_code = db.Column(db.String(20), Enum('must_sit_with', 'want_to_sit_with', 'does_not_to_sit_with'))
+
+    def __repr__(self):
+        """Provide helpful representation when printed."""
+
+    return "<SeatingRelationship seating_relationship_id=%s event_attendee_id_one=%s event_attendee_id_two=%s relationship_code=%s>" % (
+            self.seating_relationship_id, self.event_attendee_id_one, self.event_attendee_id_two self.relationship_code)
 
 
 ##############################################################################

@@ -56,12 +56,6 @@ def create_fake_attendees(howmany):
 
     return attendee_data
 
-#TODO: find a way to create a random generation of meals
-def create_fake_meal_request():
-    '''random meal choice'''
-    meals = ['regular', 'vegetarian', 'gluten-free', 'vegan', 'dairy-free']
-
-    return choice(meals)
 
 def load_attendees():
 '''loads the fake attendees into the database'''
@@ -70,7 +64,10 @@ def load_attendees():
     print "Attendees"
 
     fake_attendees = create_fake_attendees(50)
-    meal_request = create_fake_meal_request()
+
+    # using the lambda function, it should assign a random meal everytime 
+    # you call it for each attendee
+    meal_request = lambda: choice(['regular', 'vegetarian', 'gluten-free', 'vegan', 'dairy-free'])
 
     for first_name, last_name, attendee_email, street, city, state, zipcode, vip_status, note in fake_attendees:
 
@@ -78,7 +75,7 @@ def load_attendees():
                     last_name=last_name, attendee_email=attendee_email,
                     street=street, city=city,
                     state=state, zipcode=zipcode,
-                    vip_status=vip_status, meal_request=meal_request, note=note)
+                    vip_status=vip_status, meal_request=meal_request(), note=note)
 
         # We need to add to the session 
         db.session.add(attendee)
@@ -86,15 +83,19 @@ def load_attendees():
     # Once we're done, we commit our work
     db.session.commit()
 
-def load_events():
-    #TODO: finish loading events
-
 
 if __name__ == "__main__":
     connect_to_db(app)
 
     load_users()
     load_attendees()
+
+gala_dinner = Event(event_id=event_id, event_name='Gala Dinner',
+                    event_description='Fundraiser', 
+                    location='Four Seasons', time=2017, 07, 07, 15, 00,)
+
+    db.session.add(gala_dinner)
+    db.session.commit()
    
     
    

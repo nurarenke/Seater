@@ -52,7 +52,7 @@ def create_fake_attendees(howmany):
     for _ in range(0, howmany):
         attendee_data.append((fake.first_name(), fake.last_name(), fake.email(), 
             fake.street_address(), fake.city(), fake.state_abbr(), fake.zipcode(),
-            fake.boolean()))
+            fake.boolean(),fake.sentence(nb_words=6, variable_nb_words=True, ext_word_list=None)))
 
     return attendee_data
 
@@ -72,25 +72,29 @@ def load_attendees():
     fake_attendees = create_fake_attendees(50)
     meal_request = create_fake_meal_request()
 
-#TODO: finish attendees
-    for first_name, last_name, attendee_email, street, in fake_attendees:
+    for first_name, last_name, attendee_email, street, city, state, zipcode, vip_status, note in fake_attendees:
 
-        user = User(attendee_id=attendee_id,
-                    first_name=first_name,
-                    last_name=last_name,
-                    attendee_email=attendee_email)
+        attendee = Attendee(attendee_id=attendee_id,first_name=first_name,
+                    last_name=last_name, attendee_email=attendee_email,
+                    street=street, city=city,
+                    state=state, zipcode=zipcode,
+                    vip_status=vip_status, meal_request=meal_request, note=note)
 
         # We need to add to the session 
-        db.session.add(user)
+        db.session.add(attendee)
 
     # Once we're done, we commit our work
     db.session.commit()
+
+def load_events():
+    #TODO: finish loading events
 
 
 if __name__ == "__main__":
     connect_to_db(app)
 
     load_users()
+    load_attendees()
    
     
    

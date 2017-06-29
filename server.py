@@ -24,6 +24,14 @@ def index():
 
     return render_template("homepage.html")
 
+@app.route('/attendee-list')
+def display_attendee_list():
+    '''displays the list of attendees for a particular event'''
+
+    attendees = Attendee.query.filter_by(event_id=1).all()
+
+    return render_template('attendees_list.html', attendees=attendees)
+
 
 # @app.route('/register', methods=['GET'])
 # def register_form():

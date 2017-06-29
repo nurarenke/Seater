@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Attendees{% endblock %}
+{% block content %}
+
+<div>
+    <h2>Attendees</h2>
+    <ul>
+      {% for attendee in attendees %}
+          <li>
+              <a href="/attendee/{{ attendee.attendee_id }}">
+                {{ attendee.first_name }} {{ attendee.last_name }}
+              </a>
+          </li>
+      {% endfor %}
+    </ul>
+</div>
+{% endblock %}
+

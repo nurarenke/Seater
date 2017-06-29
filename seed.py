@@ -18,7 +18,8 @@ def create_fake_users(howmany):
     user_data = []
 
     for _ in range(0, howmany):
-        user_data.append((fake.username(), fake.email(), fake.password()))
+        user_data.append((fake.user_name(), fake.email(), fake.password()))
+
     return user_data
 
 def load_users():
@@ -27,14 +28,17 @@ def load_users():
     # delete any previous users
     User.query.delete()
 
-    fake_users = create_fake_users(50)
+    fake_users = create_fake_users(5)
+    print fake_users
 
     print "Users"
      
-    for username, email, password in fake_users:
+    for user_tuples in fake_users: 
+        print user_tuples
+        username, email, password = user_tuples
+        print password
 
-        user = User(user_id=user_id,
-                    username=username,
+        user = User(username=username,
                     email=email,
                     password=password)
 
@@ -58,7 +62,7 @@ def create_fake_attendees(howmany):
 
 
 def load_attendees():
-'''loads the fake attendees into the database'''
+    '''loads the fake attendees into the database'''
     Attendee.query.delete()
 
     print "Attendees"
@@ -69,9 +73,10 @@ def load_attendees():
     # you call it for each attendee
     meal_request = lambda: choice(['regular', 'vegetarian', 'gluten-free', 'vegan', 'dairy-free'])
 
-    for first_name, last_name, attendee_email, street, city, state, zipcode, vip_status, note in fake_attendees:
+    for attendee_tuples in fake_attendees:
+        first_name, last_name, attendee_email, street, city, state, zipcode, vip_status, note = attendee_tuples
 
-        attendee = Attendee(attendee_id=attendee_id,first_name=first_name,
+        attendee = Attendee(first_name=first_name,
                     last_name=last_name, attendee_email=attendee_email,
                     street=street, city=city,
                     state=state, zipcode=zipcode,
@@ -90,12 +95,12 @@ if __name__ == "__main__":
     load_users()
     load_attendees()
 
-gala_dinner = Event(event_id=event_id, event_name='Gala Dinner',
+gala_dinner = Event(event_name='Gala Dinner',
                     event_description='Fundraiser', 
-                    location='Four Seasons', time=2017, 07, 07, 15, 00,)
+                    location='Four Seasons')
 
-    db.session.add(gala_dinner)
-    db.session.commit()
+db.session.add(gala_dinner)
+db.session.commit()
    
     
    

@@ -47,11 +47,11 @@ class Attendee(db.Model):
     note = db.Column(db.String(100), nullable=True)
 
     events = db.relationship('Event',
-                            secondary='EventAttendeeSeat',
+                            secondary='events_attendees_seats',
                             backref=db.backref('attendees', order_by=attendee_id))
 
     seating_relationships = db.relationship('SeatingRelationship',
-                            secondary='EventAttendeeSeat', 
+                            secondary='events_attendees_seats', 
                             backref=db.backref('attendees', order_by=attendee_id))
 
     def __repr__(self):
@@ -105,6 +105,8 @@ class EventAttendeeSeat(db.Model):
     event_id = db.Column(db.Integer, db.ForeignKey('events.event_id'))
     attendee_id = db.Column(db.Integer, db.ForeignKey('attendees.attendee_id'))
     table_id = db.Column(db.Integer, db.ForeignKey('tables.table_id'), nullable=True)
+    seating_relationship_id = db.Column(db.Integer, db.ForeignKey(
+        'seating_relationships.seating_relationship_id'))
 
     __table_args__ = (db.UniqueConstraint('event_attendee_id', 'event_id', name='event_attendee_event_id'),)
 

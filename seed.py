@@ -61,7 +61,7 @@ def create_fake_attendees(howmany):
     return attendee_data
 
 
-def store_attendees(user_id, event_id):
+def store_attendees(event):
     '''loads the fake attendees into the database'''
 
     Attendee.query.delete()
@@ -87,15 +87,17 @@ def store_attendees(user_id, event_id):
                     vip_status=vip_status,
                     meal_request=meal_request(), 
                     note=note, 
-                    event_id=event_id,
-                    user_id=user_id,
+                    # event_id=event_id,
                     table_id=None)
 
-        # We need to add to the session 
-        db.session.add(attendee)
+        attendee.event = event
+        # event.attendees.append(attendee)
 
-    # Once we're done, we commit our work
-    db.session.commit()
+    #     # We need to add to the session 
+    #     db.session.add(attendee)
+
+    # # Once we're done, we commit our work
+    # db.session.commit()
 
 if __name__ == "__main__":
     connect_to_db(app)
@@ -106,20 +108,27 @@ if __name__ == "__main__":
 #  create the attendees for the event
 
 store_users()
+event_owner = User.query.first()
+
+Event.query.delete()
 
 gala_dinner = Event(event_name='Gala Dinner',
                     event_description='Fundraiser', 
                     location='Four Seasons')
 
+gala_dinner.user = event_owner
+
+
+# gala_event_query = db.session.query(Event).filter(Event.event_name=='Gala Dinner').one()
+# event_id = gala_event_query.event_id
+
+# user_query = db.session.query(User).filter(User.user_id==1).one()
+# user_id = user_query.user_id
+
+store_attendees(gala_dinner)
+
 db.session.add(gala_dinner)
 db.session.commit()
-
-event_id = db.session.query(event_id).filter(Event.event_name='gala_dinner').one()
-user_id = db.session.query(user_id).filter(User.id=1).one()
-
-store_attendees(user_id, event_id)
-
-
 
    
     

@@ -38,7 +38,7 @@ class Event(db.Model):
     event_description = db.Column(db.String(150), nullable=True)
     location = db.Column(db.String(50), nullable=True)
     time = db.Column(db.DateTime, nullable=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('User.user_id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
 
     user = db.relationship('User', 
                             backref=db.backref('events', order_by=event_id))
@@ -58,13 +58,13 @@ class Table(db.Model):
     table_name = db.Column(db.String(64), nullable=True, unique=True)
     max_seats = db.Column(db.Integer, nullable=True)
     event_id = db.Column(db.Integer, db.ForeignKey('events.event_id'))
-    user_id = db.Column(db.Integer, db.ForeignKey('User.user_id'))
+    # user_id = db.Column(db.Integer, db.ForeignKey('User.user_id'))
 
     event = db.relationship('Event', 
                             backref=db.backref('tables', order_by=table_id))
 
-    user = db.relationship('User', 
-                            backref=db.backref('tables', order_by=table_id))
+    # user = db.relationship('User', 
+    #                         backref=db.backref('tables', order_by=table_id))
 
     def __repr__(self):
         """Provide helpful representation when printed."""
@@ -88,18 +88,19 @@ class Attendee(db.Model):
     vip_status = db.Column(db.Boolean, nullable=True)
     meal_request = db.Column(db.String(64), nullable=True)
     note = db.Column(db.String(100), nullable=True)
+    guest = db.Column(db.String(50), nullable=True)
     event_id = db.Column(db.Integer, db.ForeignKey('events.event_id'))
     table_id = db.Column(db.Integer, db.ForeignKey('tables.table_id'))
-    user_id = db.Column(db.Integer, db.ForeignKey('User.user_id'))
+    # user_id = db.Column(db.Integer, db.ForeignKey('User.user_id'))
 
-    events = db.relationship('Event',
+    event = db.relationship('Event',
                             backref=db.backref('attendees', order_by=attendee_id))
 
-    tables = db.relationship('Table', 
+    table = db.relationship('Table', 
                             backref=db.backref('attendees', order_by=attendee_id))
 
-    user = db.relationship('User', 
-                            backref=db.backref('attendees', order_by=attendee_id))
+    # user = db.relationship('User', 
+    #                         backref=db.backref('attendees', order_by=attendee_id))
 
     def __repr__(self):
         """Provide helpful representation when printed."""

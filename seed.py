@@ -71,7 +71,7 @@ def load_attendees():
 
     # using the lambda function, it should assign a random meal everytime 
     # you call it for each attendee
-    meal_request = lambda: choice(['regular', 'vegetarian', 'gluten-free', 'vegan', 'dairy-free'])
+    meal_request = lambda: choice(['regular', 'regular', 'regular', 'regular', 'regular', 'regular', 'vegetarian', 'gluten-free', 'vegan', 'dairy-free'])
 
     for attendee_tuples in fake_attendees:
         first_name, last_name, attendee_email, street, city, state, zipcode, vip_status, note = attendee_tuples

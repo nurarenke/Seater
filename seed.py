@@ -3,7 +3,7 @@
 import datetime
 from sqlalchemy import func
 
-from model import User, Attendee, Event, Table, EventAttendeeSeat, SeatingRelationship, connect_to_db, db
+from model import User, Attendee, Event, Table, SeatingRelationship, connect_to_db, db
 from server import app
 
 from faker import Factory
@@ -22,7 +22,7 @@ def create_fake_users(howmany):
 
     return user_data
 
-def load_users():
+def store_users():
     """Load users from fake_users into database."""
 
     # delete any previous users
@@ -61,7 +61,7 @@ def create_fake_attendees(howmany):
     return attendee_data
 
 
-def load_attendees():
+def store_attendees(user_id, event_id):
     '''loads the fake attendees into the database'''
     Attendee.query.delete()
 
@@ -77,10 +77,17 @@ def load_attendees():
         first_name, last_name, attendee_email, street, city, state, zipcode, vip_status, note = attendee_tuples
 
         attendee = Attendee(first_name=first_name,
-                    last_name=last_name, attendee_email=attendee_email,
-                    street=street, city=city,
-                    state=state, zipcode=zipcode,
-                    vip_status=vip_status, meal_request=meal_request(), note=note)
+                    last_name=last_name, 
+                    attendee_email=attendee_email,
+                    street=street, 
+                    city=city, 
+                    state=state, 
+                    zipcode=zipcode,
+                    vip_status=vip_status,
+                    meal_request=meal_request(), 
+                    note=note, 
+                    event_id=event_id,
+                    user_id=user_id)
 
         # We need to add to the session 
         db.session.add(attendee)
@@ -88,12 +95,15 @@ def load_attendees():
     # Once we're done, we commit our work
     db.session.commit()
 
-
 if __name__ == "__main__":
     connect_to_db(app)
+#create users
+#get a list of the users
+#for each user
+#  create an event
+#  create the attendees for the event
 
-    load_users()
-    load_attendees()
+store_users()
 
 gala_dinner = Event(event_name='Gala Dinner',
                     event_description='Fundraiser', 
@@ -101,6 +111,14 @@ gala_dinner = Event(event_name='Gala Dinner',
 
 db.session.add(gala_dinner)
 db.session.commit()
+
+event_id = db.session.query(event_id).filter(Event.event_name='gala_dinner').one()
+user_id = db.session.query(user_id).filter(User.id=1).one()
+
+store_attendees(user_id, event_id)
+
+
+
    
     
    

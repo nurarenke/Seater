@@ -38,6 +38,7 @@ class Event(db.Model):
     event_description = db.Column(db.String(150), nullable=True)
     location = db.Column(db.String(50), nullable=True)
     time = db.Column(db.DateTime, nullable=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('User.user_id'))
 
     def __repr__(self):
         """Provide helpful representation when printed."""
@@ -54,6 +55,7 @@ class Table(db.Model):
     table_name = db.Column(db.String(64), nullable=True, unique=True)
     max_seats = db.Column(db.Integer, nullable=True)
     event_id = db.Column(db.Integer, db.ForeignKey('events.event_id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('User.user_id'))
 
     event = db.relationship('Event', 
                             backref=db.backref('tables', order_by=table_id))
@@ -82,6 +84,7 @@ class Attendee(db.Model):
     note = db.Column(db.String(100), nullable=True)
     event_id = db.Column(db.Integer, db.ForeignKey('events.event_id'))
     table_id = db.Column(db.Integer, db.ForeignKey('tables.table_id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('User.user_id'))
 
     events = db.relationship('Event',
                             backref=db.backref('attendees', order_by=attendee_id))
@@ -100,14 +103,12 @@ class SeatingRelationship(db.Model):
 
     __tablename__ = 'seating_relationships'
 
-    primary_attendee = db.Column(db.Integer, db.ForeignKey('attendees.attendee_id'), primary_key=True)
-    secondary_attendee = db.Column(db.Integer, db.ForeignKey('attendees.attendee_id'), primary_key=True)
+    seating_relationship_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    primary_attendee = db.Column(db.Integer, db.ForeignKey('attendees.attendee_id'))
+    secondary_attendee = db.Column(db.Integer, db.ForeignKey('attendees.attendee_id'))
     relationship_code = db.Column(db.String(20), db.Enum('must_sit_with', 'want_to_sit_with', 'does_not_to_sit_with', name='relationship_types'))
 
-    __table_args__ = (db.UniqueConstraint('primary_attendee', 'secondary_attendee', name='attendee_relationship'))
-
-    attendees = db.relationship('Attendee',
-                            backref=db.backref('seating_relationships', order_by=primary_attendee))
+    __table_args__ = (db.UniqueConstraint('primary_attendee', 'secondary_attendee', name='attendee_relationship'),)
 
     def __repr__(self):
         """Provide helpful representation when printed."""

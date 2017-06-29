@@ -40,6 +40,9 @@ class Event(db.Model):
     time = db.Column(db.DateTime, nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey('User.user_id'))
 
+    user = db.relationship('User', 
+                            backref=db.backref('events', order_by=event_id))
+
     def __repr__(self):
         """Provide helpful representation when printed."""
 
@@ -58,6 +61,9 @@ class Table(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('User.user_id'))
 
     event = db.relationship('Event', 
+                            backref=db.backref('tables', order_by=table_id))
+
+    user = db.relationship('User', 
                             backref=db.backref('tables', order_by=table_id))
 
     def __repr__(self):
@@ -90,6 +96,9 @@ class Attendee(db.Model):
                             backref=db.backref('attendees', order_by=attendee_id))
 
     tables = db.relationship('Table', 
+                            backref=db.backref('attendees', order_by=attendee_id))
+
+    user = db.relationship('User', 
                             backref=db.backref('attendees', order_by=attendee_id))
 
     def __repr__(self):

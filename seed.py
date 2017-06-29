@@ -63,6 +63,7 @@ def create_fake_attendees(howmany):
 
 def store_attendees(user_id, event_id):
     '''loads the fake attendees into the database'''
+
     Attendee.query.delete()
 
     print "Attendees"
@@ -87,7 +88,8 @@ def store_attendees(user_id, event_id):
                     meal_request=meal_request(), 
                     note=note, 
                     event_id=event_id,
-                    user_id=user_id)
+                    user_id=user_id,
+                    table_id=None)
 
         # We need to add to the session 
         db.session.add(attendee)

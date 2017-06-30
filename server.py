@@ -28,7 +28,8 @@ def index():
 def display_attendee_list():
     '''displays the list of attendees for a particular event'''
 
-    attendees = Attendee.query.filter_by(event_id=1).all()
+    event_id = 1
+    attendees = Attendee.query.filter_by(event_id=event_id).all()
 
     return render_template('attendees_list.html', attendees=attendees)
 

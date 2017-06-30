@@ -62,8 +62,7 @@ def store_attendees(event):
     # you call it for each attendee
     meal_request = lambda: choice(['regular', 'regular', 'regular', 'regular', 'regular', 'regular', 'vegetarian', 'gluten-free', 'vegan', 'dairy-free'])
 
-    for attendee_tuples in fake_attendees:
-        first_name, last_name, attendee_email, street, city, state, zipcode, is_vip, note = attendee_tuples
+    for first_name, last_name, attendee_email, street, city, state, zipcode, is_vip, note in fake_attendees:
 
         attendee = Attendee(first_name=first_name,
                     last_name=last_name, 
@@ -76,43 +75,34 @@ def store_attendees(event):
                     meal_request=meal_request(), 
                     note=note)
 
+        # taking the passed argument of our gala dinner and adding it to each attendee
         attendee.event = event
-        # event.attendees.append(attendee)
 
-    #     # We need to add to the session 
-    #     db.session.add(attendee)
-
-    # # Once we're done, we commit our work
-    # db.session.commit()
 
 if __name__ == "__main__":
     connect_to_db(app)
-#create users
-#get a list of the users
-#for each user
-#  create an event
-#  create the attendees for the event
 
+# add fake users to database
 store_users()
+
+# grab the first user 
 event_owner = User.query.first()
 
+# delete any previous events
 Event.query.delete()
 
+# add a fake event to the database
 gala_dinner = Event(event_name='Gala Dinner',
                     event_description='Fundraiser', 
                     location='Four Seasons')
 
+# match the user id to the event
 gala_dinner.user = event_owner
 
-
-# gala_event_query = db.session.query(Event).filter(Event.event_name=='Gala Dinner').one()
-# event_id = gala_event_query.event_id
-
-# user_query = db.session.query(User).filter(User.user_id==1).one()
-# user_id = user_query.user_id
-
+# add attendees to the event
 store_attendees(gala_dinner)
 
+# commit our changes and add the event
 db.session.add(gala_dinner)
 db.session.commit()
 

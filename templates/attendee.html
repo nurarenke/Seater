@@ -26,6 +26,19 @@
 
   <div class=attendee-info>Event Attending: {{ attendee.event.event_name }}
   </div>
+</div>
+
+<div>
+  <h2>Relationships</h2>
+  <form action='/attendee-relationship'>
+    <label>Select an Attendee</label>
+    <select name='secondary-attendee'>
+      {% for attendee in attendees %}
+        <option value='{{ attendee.attendee_id }}'>{{ attendee.first_name }} {{ attendee.last_name }}</option>
+      {% endfor %}
+    </select>
+  </form>
+</div>
 {% endblock %}  
 
   

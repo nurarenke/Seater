@@ -32,6 +32,14 @@ def display_attendee_list():
 
     return render_template('attendees_list.html', attendees=attendees)
 
+@app.route("/attendee/<int:attendee_id>")
+def user_detail(attendee_id):
+    """Show info about user."""
+
+    attendee = Attendee.query.get(attendee_id)
+
+    return render_template("attendee.html", attendee=attendee)
+
 
 # @app.route('/register', methods=['GET'])
 # def register_form():
@@ -97,22 +105,6 @@ def display_attendee_list():
 #     del session["user_id"]
 #     flash("Logged Out.")
 #     return redirect("/")
-
-
-# @app.route("/users")
-# def user_list():
-#     """Show list of users."""
-
-#     users = User.query.all()
-#     return render_template("user_list.html", users=users)
-
-
-# @app.route("/users/<int:user_id>")
-# def user_detail(user_id):
-#     """Show info about user."""
-
-#     user = User.query.options(db.joinedload('ratings').joinedload('movie')).get(user_id)
-#     return render_template("user.html", user=user)
 
 
 # @app.route("/movies")

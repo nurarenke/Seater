@@ -81,6 +81,7 @@ def user_detail(attendee_id):
 #     # Get form variables
 #     email = request.form["email"]
 #     password = request.form["password"]
+# TODO: create hash password to match the other hash passwords that's already stored
 
 #     user = User.query.filter_by(email=email).first()
 

@@ -18,9 +18,9 @@ class User(db.Model):
     __tablename__ = "users"
 
     user_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    username = db.Column(db.String(25), nullable=False, unique=True)
-    email = db.Column(db.String(64), nullable=False, unique=True)
-    password = db.Column(db.String(64), nullable=False,)
+    email = db.Column(db.String(128), nullable=False, unique=True)
+    password = db.Column(db.String(128), nullable=False)
+    name = db.Column(db.String(32), nullable=False)
 
     def __repr__(self):
         """Provide helpful representation when printed."""
@@ -36,8 +36,8 @@ class Event(db.Model):
     event_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     event_name = db.Column(db.String(64), nullable=False)
     event_description = db.Column(db.String(150), nullable=True)
-    location = db.Column(db.String(50), nullable=True)
-    time = db.Column(db.DateTime, nullable=True)
+    location = db.Column(db.String(200), nullable=True)
+    time = db.Column(db.String(64), nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
 
     user = db.relationship('User', 
@@ -58,18 +58,13 @@ class Table(db.Model):
     table_name = db.Column(db.String(64), nullable=True, unique=True)
     max_seats = db.Column(db.Integer, nullable=True)
     event_id = db.Column(db.Integer, db.ForeignKey('events.event_id'))
-    # user_id = db.Column(db.Integer, db.ForeignKey('User.user_id'))
 
     event = db.relationship('Event', 
                             backref=db.backref('tables', order_by=table_id))
-
-    # user = db.relationship('User', 
-    #                         backref=db.backref('tables', order_by=table_id))
-
     def __repr__(self):
         """Provide helpful representation when printed."""
 
-        return "<Event table_id=%s table_name=%s max_seats=%s>" % (
+        return "<Table table_id=%s table_name=%s max_seats=%s>" % (
             self.table_id, self.table_name, self.max_seats)
 
 class Attendee(db.Model):
@@ -80,27 +75,22 @@ class Attendee(db.Model):
     attendee_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     first_name = db.Column(db.String(64), nullable=False)
     last_name = db.Column(db.String(64), nullable=False)
-    attendee_email = db.Column(db.String(64), nullable=True)
+    attendee_email = db.Column(db.String(150), nullable=True)
     street = db.Column(db.String(64), nullable=True)
     city = db.Column(db.String(64), nullable=True)
     state = db.Column(db.String(64), nullable=True)
-    zipcode = db.Column(db.Integer, nullable=True)
-    vip_status = db.Column(db.Boolean, nullable=True)
+    zipcode = db.Column(db.String(32), nullable=True)
+    is_vip = db.Column(db.Boolean, nullable=True)
     meal_request = db.Column(db.String(64), nullable=True)
     note = db.Column(db.String(100), nullable=True)
-    guest = db.Column(db.String(50), nullable=True)
     event_id = db.Column(db.Integer, db.ForeignKey('events.event_id'))
     table_id = db.Column(db.Integer, db.ForeignKey('tables.table_id'))
-    # user_id = db.Column(db.Integer, db.ForeignKey('User.user_id'))
 
     event = db.relationship('Event',
                             backref=db.backref('attendees', order_by=attendee_id))
 
     table = db.relationship('Table', 
                             backref=db.backref('attendees', order_by=attendee_id))
-
-    # user = db.relationship('User', 
-    #                         backref=db.backref('attendees', order_by=attendee_id))
 
     def __repr__(self):
         """Provide helpful representation when printed."""
@@ -116,7 +106,7 @@ class SeatingRelationship(db.Model):
     seating_relationship_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     primary_attendee = db.Column(db.Integer, db.ForeignKey('attendees.attendee_id'))
     secondary_attendee = db.Column(db.Integer, db.ForeignKey('attendees.attendee_id'))
-    relationship_code = db.Column(db.String(20), db.Enum('must_sit_with', 'want_to_sit_with', 'does_not_to_sit_with', name='relationship_types'))
+    relationship_code = db.Column(db.String(20), db.Enum('must', 'want', 'must_not', name='relationship_types'))
 
     __table_args__ = (db.UniqueConstraint('primary_attendee', 'secondary_attendee', name='attendee_relationship'),)
 

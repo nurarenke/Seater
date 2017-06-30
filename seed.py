@@ -12,35 +12,23 @@ from random import choice
 # using a python faker package to generate fake data for the database
 fake = Factory.create()
 
-def create_fake_users(howmany):
-    '''autogenerate fake users'''
-
-    user_data = []
-
-    for _ in range(0, howmany):
-        user_data.append((fake.user_name(), fake.email(), fake.password()))
-
-    return user_data
-
 def store_users():
     """Load users from fake_users into database."""
 
     # delete any previous users
     User.query.delete()
 
-    fake_users = create_fake_users(5)
+    fake_users = [("nura@gmail.com", "password", fake.name()),
+    ("burger@gmail.com", "password", fake.name()),
+    ("chris@gmail.com", "password", fake.name()),
+    ("ticket@gmail.com", "password", fake.name()),
+    ("erby@gmail.com", "password", fake.name())]
     print fake_users
-
-    print "Users"
      
-    for user_tuples in fake_users: 
-        print user_tuples
-        username, email, password = user_tuples
-        print password
-
-        user = User(username=username,
-                    email=email,
-                    password=password)
+    for email, password, name in fake_users: 
+        user = User(email=email,
+                    password=password,
+                    name=name)
 
         # We need to add to the session 
         db.session.add(user)
@@ -75,7 +63,7 @@ def store_attendees(event):
     meal_request = lambda: choice(['regular', 'regular', 'regular', 'regular', 'regular', 'regular', 'vegetarian', 'gluten-free', 'vegan', 'dairy-free'])
 
     for attendee_tuples in fake_attendees:
-        first_name, last_name, attendee_email, street, city, state, zipcode, vip_status, note = attendee_tuples
+        first_name, last_name, attendee_email, street, city, state, zipcode, is_vip, note = attendee_tuples
 
         attendee = Attendee(first_name=first_name,
                     last_name=last_name, 
@@ -84,11 +72,9 @@ def store_attendees(event):
                     city=city, 
                     state=state, 
                     zipcode=zipcode,
-                    vip_status=vip_status,
+                    is_vip=is_vip,
                     meal_request=meal_request(), 
-                    note=note, 
-                    # event_id=event_id,
-                    table_id=None)
+                    note=note)
 
         attendee.event = event
         # event.attendees.append(attendee)

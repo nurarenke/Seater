@@ -5,14 +5,13 @@
   <p>
   Email: {{ attendee.attendee_email }}<br><br>
   Address: {{ attendee.street }}, {{ attendee.city }}, {{attendee.state }} {{ attendee.zipcode }}<br><br>
-  Vip: {% if attendee.vip_status == 't' %} 
+  Vip: {% if attendee.is_vip == 't' %} 
         Yes
         {% else %}
         No
         {% endif %}<br><br>
   Meal Request: {{ attendee.meal_request }}<br><br>
   Note: {{ attendee.note }}<br><br>
-  Guest: {{ attendee.guest }}<br><br>
   Event Attending: {{ attendee.event.event_name }}<br><br>
   
 

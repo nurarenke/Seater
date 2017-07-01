@@ -30,13 +30,22 @@
 
 <div>
   <h2>Relationships</h2>
-  <form action='/attendee-relationship'>
+  <form action='/attendee/{{ attendee.attendee_id }} method='POST'>
+
     <label>Select an Attendee</label>
     <select name='secondary-attendee'>
-      {% for attendee in attendees %}
+      {% for attendee in attendees | sort(attribute='last_name') %}
         <option value='{{ attendee.attendee_id }}'>{{ attendee.first_name }} {{ attendee.last_name }}</option>
       {% endfor %}
     </select>
+
+    <label>Select an Attendee</label>
+    <select name='relationship-code'>
+        <option value='must'>Must sit sith</option>
+        <option value='want'>Want to sit with</option>
+        <option value='must_not'>Must not sit with</option>
+    </select>
+    <input type="submit" value="Submit">
   </form>
 </div>
 {% endblock %}  

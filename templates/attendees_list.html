@@ -5,7 +5,7 @@
 <div>
     <h2>Attendees</h2>
     <ul>
-      {% for attendee in attendees %}
+      {% for attendee in attendees | sort(attribute='last_name') %}
           <li>
               <a href="/attendee/{{ attendee.attendee_id }}">
                 {{ attendee.first_name }} {{ attendee.last_name }}

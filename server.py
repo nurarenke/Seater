@@ -34,7 +34,7 @@ def display_attendee_list():
     return render_template('attendees_list.html', attendees=attendees)
 
 @app.route('/attendee/<int:attendee_id>')
-def user_detail(attendee_id):
+def attendee_detail(attendee_id):
     '''Show info about user.'''
 
     attendee = Attendee.query.get(attendee_id)
@@ -45,11 +45,20 @@ def user_detail(attendee_id):
     return render_template("attendee.html", attendee=attendee, attendees=attendees)
 
 
-@app.route('/attendee-relationship')
-def update_relationship():
+@app.route('/attendee/<int:attendee_id>', methods=['POST'])
+def update_relationship(attendee_id):
     '''update relationship of the user in the database'''
 
+    secondary_attendee = request.form['secondary-attendee']
 
+    relationship_code = request.form['relationship-code']
+
+    relationship = SeatingRelationship(primary_attendee=attendee_id, 
+        secondary_attendee=secondary_attendee, relationship_code=relationship_code)
+
+    db.session.commit()
+
+    return redirect('/attendee/<int:attendee_id>')
 
 
 if __name__ == "__main__":

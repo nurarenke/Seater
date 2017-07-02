@@ -37,20 +37,41 @@ def display_attendee_list():
 def attendee_detail(attendee_id):
     '''Show info about user.'''
 
+    # store the attendee_id from the page
     attendee = Attendee.query.get(attendee_id)
 
+    # query for all attendees with the same event_id
     event_id = 1
     attendees = Attendee.query.filter_by(event_id=event_id).all()
 
-    return render_template("attendee.html", attendee=attendee, attendees=attendees)
+    # store the query for relationships for the attendee
+    relationships = db.session.query(SeatingRelationship).filter(
+        (SeatingRelationship.primary_attendee == attendee_id) | (
+            SeatingRelationship.secondary_attendee == attendee_id)).all()
 
+    relationships_with_attendee = []
+    for r in relationships:
+        relationship_attendee = None
+        if r.primary_attendee == attendee_id:
+            relationship_attendee = Attendee.query.get(r.secondary_attendee)
+        else:
+            relationship_attendee = Attendee.query.get(r.primary_attendee)
+
+        relationships_with_attendee.append((relationship_attendee, r.relationship_code)) 
+
+
+
+    return render_template("attendee.html", 
+                            attendee=attendee, 
+                            attendees=attendees, 
+                            relationships_with_attendee=relationships_with_attendee)
 
 @app.route('/attendee/<int:attendee_id>', methods=['POST'])
 def update_relationship(attendee_id):
     '''update relationship of the user in the database'''
 
     attendee = Attendee.query.get(attendee_id)
-    
+
     # get form variables
     secondary_attendee = int(request.form['secondary-attendee'])
 

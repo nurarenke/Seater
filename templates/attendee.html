@@ -29,7 +29,7 @@
 </div>
 
 <div>
-  <h2>Relationships</h2>
+  <h2>Create Relationships</h2>
   <form action='/attendee/{{ attendee.attendee_id }}' method='POST'>
 
     <label>Select an Attendee</label>
@@ -47,6 +47,21 @@
     </select>
     <input type="submit" value="Submit">
   </form>
+</div>
+
+<div>
+  <h2>Established Relationships</h2>
+
+  <ul>
+      {% for secondary_attendee, relationship_code in relationships_with_attendee %}
+      <li>
+        <a href='/attendee/{{ secondary_attendee.attendee_id }}'>
+        {{ secondary_attendee.last_name }}, {{ secondary_attendee.first_name }} - {{ relationship_code }}
+        </a>
+      </li>
+      {% endfor %}
+  </ul>
+
 </div>
 {% endblock %}  
 

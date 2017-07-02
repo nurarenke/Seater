@@ -49,16 +49,21 @@ def attendee_detail(attendee_id):
 def update_relationship(attendee_id):
     '''update relationship of the user in the database'''
 
-    secondary_attendee = request.form['secondary-attendee']
+    attendee = Attendee.query.get(attendee_id)
+    
+    # get form variables
+    secondary_attendee = int(request.form['secondary-attendee'])
 
     relationship_code = request.form['relationship-code']
 
     relationship = SeatingRelationship(primary_attendee=attendee_id, 
-        secondary_attendee=secondary_attendee, relationship_code=relationship_code)
-
+                                        secondary_attendee=secondary_attendee,
+                                        relationship_code=relationship_code)
+    flash('Relationship added.')
+    db.session.add(relationship)
     db.session.commit()
 
-    return redirect('/attendee/<int:attendee_id>')
+    return redirect('/attendee/{}'.format(attendee.attendee_id))
 
 
 if __name__ == "__main__":

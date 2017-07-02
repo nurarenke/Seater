@@ -24,14 +24,14 @@ def index():
 
     return render_template("homepage.html")
 
-@app.route('/attendee-list')
+@app.route('/event-info')
 def display_attendee_list():
     '''displays the list of attendees for a particular event'''
 
     event_id = 1
     attendees = Attendee.query.filter_by(event_id=event_id).all()
 
-    return render_template('attendees_list.html', attendees=attendees)
+    return render_template('event-info.html', attendees=attendees)
 
 @app.route('/attendee/<int:attendee_id>')
 def attendee_detail(attendee_id):
@@ -45,10 +45,12 @@ def attendee_detail(attendee_id):
     attendees = Attendee.query.filter_by(event_id=event_id).all()
 
     # store the query for relationships for the attendee
+    # filter by primary attendee id or secondary attendee id
     relationships = db.session.query(SeatingRelationship).filter(
         (SeatingRelationship.primary_attendee == attendee_id) | (
             SeatingRelationship.secondary_attendee == attendee_id)).all()
 
+    # find the other relationship to the attendee
     relationships_with_attendee = []
     for r in relationships:
         relationship_attendee = None
@@ -85,6 +87,25 @@ def update_relationship(attendee_id):
     db.session.commit()
 
     return redirect('/attendee/{}'.format(attendee.attendee_id))
+
+@app.route('/create-tables', methods=['POST'])
+def create_tables():
+    '''create tables'''
+
+    event_id = 1
+
+    table_name = request.form['table-name']
+
+    max_seats = int(request.form['max-seats'])
+
+    table = Table(event_id=event_id,
+                    table_name=table_name,
+                    max_seats=max_seats)
+
+    db.session.add(table)
+    db.session.commit()
+
+    return redirect('/event-info')
 
 
 if __name__ == "__main__":

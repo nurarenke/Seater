@@ -26,7 +26,7 @@ def index():
 
 @app.route('/event-info')
 def display_attendee_list():
-    '''displays the list of attendees for a particular event'''
+    '''displays a list of attendees and tables for a particular event'''
 
     event_id = 1
     attendees = Attendee.query.filter_by(event_id=event_id).all()
@@ -40,7 +40,7 @@ def display_attendee_list():
 
 @app.route('/attendee/<int:attendee_id>')
 def attendee_detail(attendee_id):
-    '''Show info about user.'''
+    '''Show info about user and relationships.'''
 
     # store the attendee_id from the page
     attendee = Attendee.query.get(attendee_id)
@@ -84,6 +84,7 @@ def update_relationship(attendee_id):
 
     relationship_code = request.form['relationship-code']
 
+    # add relationship to the database
     relationship = SeatingRelationship(primary_attendee=attendee_id, 
                                         secondary_attendee=secondary_attendee,
                                         relationship_code=relationship_code)
@@ -99,10 +100,12 @@ def create_tables():
 
     event_id = 1
 
+    # retrieve values from the form
     table_name = request.form['table-name']
 
     max_seats = int(request.form['max-seats'])
 
+    # add the table to the database
     table = Table(event_id=event_id,
                     table_name=table_name,
                     max_seats=max_seats)
@@ -120,6 +123,29 @@ def table_detail(table_id):
 
     return render_template('/table-info.html',
                             table=table)
+
+@app.route('/table_assignments')
+def assign_tables():
+    '''assign tables'''
+
+    attendees = Attendee.query.all()
+
+    for attendee in attendees:
+        relationships = db.session.query(SeatingRelationship).filter(
+            (SeatingRelationship.primary_attendee == attendee.attendee_id) | (
+                SeatingRelationship.secondary_attendee == attendee.attendee_id)).all()
+
+    # find the other relationship to the attendee
+    relationships_with_attendee = []
+    for r in relationships:
+        relationship_attendee = None
+        if r.primary_attendee == attendee_id:
+            relationship_attendee = Attendee.query.get(r.secondary_attendee)
+        else:
+            relationship_attendee = Attendee.query.get(r.primary_attendee)
+
+        relationships_with_attendee.append((relationship_attendee, r.relationship_code)) 
+
 
 
 if __name__ == "__main__":

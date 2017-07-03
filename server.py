@@ -31,7 +31,12 @@ def display_attendee_list():
     event_id = 1
     attendees = Attendee.query.filter_by(event_id=event_id).all()
 
-    return render_template('event-info.html', attendees=attendees)
+    tables = Table.query.filter_by(event_id=event_id).all()
+
+
+    return render_template('event-info.html', 
+                            attendees=attendees,
+                            tables=tables)
 
 @app.route('/attendee/<int:attendee_id>')
 def attendee_detail(attendee_id):
@@ -106,6 +111,15 @@ def create_tables():
     db.session.commit()
 
     return redirect('/event-info')
+
+@app.route('/table-info/<int:table_id>')
+def table_detail(table_id):
+    '''Show info about a table.'''
+
+    table = Table.query.get(table_id)
+
+    return render_template('/table-info.html',
+                            table=table)
 
 
 if __name__ == "__main__":

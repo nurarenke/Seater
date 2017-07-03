@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}Attendees{% endblock %}
+{% block content %}
+
+<div>
+    <h2>Attendees</h2>
+    <ul>
+      {% for attendee in attendees | sort(attribute='last_name') %}
+          <li>
+              <a href="/attendee/{{ attendee.attendee_id }}">
+                {{ attendee.first_name }} {{ attendee.last_name }}
+              </a>
+          </li>
+      {% endfor %}
+    </ul>
+</div>
+
+<div>
+    <h2>Create your Tables:</h2>
+
+    <form action='/create-tables' method='POST'>
+
+    <label>Table Name</label>
+    <input type='text' name='table-name'><br><br>
+    <label>Number of Seats</label>
+    <input type='number' name='max-seats'>
+    <input type='submit' value='Submit'>
+
+</div>
+
+<div>
+  <h2>Created Tables:</h2>
+    <ul>
+      {% for table in tables %}
+      <li><a href="/table-info/{{ table.table_id }}">
+        Table Name: {{ table.table_name }}, Max-Seats: {{ table.max_seats }}
+        </a>
+      </li>
+      {% endfor %}
+  </ul>
+</div>
+{% endblock %}
+

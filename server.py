@@ -128,24 +128,7 @@ def table_detail(table_id):
 def assign_tables():
     '''assign tables'''
 
-    attendees = Attendee.query.all()
-
-    for attendee in attendees:
-        relationships = db.session.query(SeatingRelationship).filter(
-            (SeatingRelationship.primary_attendee == attendee.attendee_id) | (
-                SeatingRelationship.secondary_attendee == attendee.attendee_id)).all()
-
-    # find the other relationship to the attendee
-    relationships_with_attendee = []
-    for r in relationships:
-        relationship_attendee = None
-        if r.primary_attendee == attendee_id:
-            relationship_attendee = Attendee.query.get(r.secondary_attendee)
-        else:
-            relationship_attendee = Attendee.query.get(r.primary_attendee)
-
-        relationships_with_attendee.append((relationship_attendee, r.relationship_code)) 
-
+pass
 
 
 if __name__ == "__main__":

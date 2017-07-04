@@ -18,8 +18,8 @@ def store_users():
     # delete any previous users
     User.query.delete()
 
-    fake_users = [("nura@gmail.com", "password", fake.name()),
-    ("burger@gmail.com", "password", fake.name()),
+    fake_users = [("nura@gmail.com", "password", Nura Renke),
+    ("burger@gmail.com", "password", Burger Christopher),
     ("chris@gmail.com", "password", fake.name()),
     ("ticket@gmail.com", "password", fake.name()),
     ("erby@gmail.com", "password", fake.name())]

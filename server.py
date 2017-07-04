@@ -24,6 +24,74 @@ def index():
 
     return render_template("homepage.html")
 
+@app.route('/register', methods=['GET'])
+def register_form():
+    """Show form for user signup."""
+
+    return render_template("register_form.html")
+
+
+@app.route('/register', methods=['POST'])
+def register_process():
+    """Process registration."""
+
+    # Get form variables
+    email = request.form["email"]
+    password = request.form["password"]
+    age = int(request.form["age"])
+    zipcode = request.form["zipcode"]
+
+    new_user = User(email=email, password=password, age=age, zipcode=zipcode)
+
+    db.session.add(new_user)
+    db.session.commit()
+
+    flash("User %s added." % email)
+    return redirect("/users/%s" % new_user.user_id)
+
+@app.route('/login', methods=['GET'])
+def login_form():
+    '''Show login form'''
+
+    return render_template('login-form.html')
+
+@app.route('/login', methods=['POST'])
+def login_process():
+    '''Process login'''
+
+    # Get form variables
+    email = request.form["email"]
+    password = request.form["password"]
+
+    user = User.query.filter_by(email=email).first()
+
+    if not user:
+        flash("No such user")
+        return redirect("/login")
+
+    if user.password != password:
+        flash("Incorrect password")
+        return redirect("/login")
+
+    session["user_id"] = user.user_id
+
+    flash("Logged in")
+    return render_template("/events.html")
+
+@app.route('/logout')
+def logout():
+    """Log out."""
+
+    del session["user_id"]
+    flash("Logged Out.")
+    return redirect("/")
+
+@app.route('/events')
+def display_events():
+    '''Displays user's events'''
+
+    return render_template('/events.html')
+
 @app.route('/event-info')
 def display_attendee_list():
     '''displays a list of attendees and tables for a particular event'''

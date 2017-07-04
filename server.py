@@ -28,7 +28,7 @@ def index():
 def register_form():
     """Show form for user signup."""
 
-    return render_template("register_form.html")
+    return render_template("register-form.html")
 
 
 @app.route('/register', methods=['POST'])
@@ -36,18 +36,17 @@ def register_process():
     """Process registration."""
 
     # Get form variables
-    email = request.form["email"]
-    password = request.form["password"]
-    age = int(request.form["age"])
-    zipcode = request.form["zipcode"]
+    email = request.form['email']
+    password = request.form['password']
+    name = request.form['name']
 
-    new_user = User(email=email, password=password, age=age, zipcode=zipcode)
+    new_user = User(email=email, password=password, name=name)
 
     db.session.add(new_user)
     db.session.commit()
 
-    flash("User %s added." % email)
-    return redirect("/users/%s" % new_user.user_id)
+    flash("User {} added.".format(name))
+    return render_template('/events.html')
 
 @app.route('/login', methods=['GET'])
 def login_form():

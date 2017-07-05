@@ -37,23 +37,36 @@ def find_relationships(attendee):
 
 relationships = find_relationships(attendee)
 
+# relationships prints out the following:
+#[(<Attendee attendee_id=34 first_name=Daniel last_name=Ball>, u'must'),
+# (<Attendee attendee_id=16 first_name=Amy last_name=Stevens>, u'must'), 
+#(<Attendee attendee_id=30 first_name=Maurice last_name=Owens>, u'want'), 
+#(<Attendee attendee_id=22 first_name=Kelly last_name=Copeland>, u'must_not')]
+
 def table_assignments():
     # calculate how many tables the user created
     number_of_tables = Table.query.count()
 
     # create a dictionary of tables and max seats
-    list_of_tables = {}
+    tables_dict = {}
 
     tables = Table.query.all()
 
     for table in tables:
-        list_of_tables[table.table_id] = table.max_seats
+        tables_dict[table.table_id] = table.max_seats
 
-        if list_of_tables[table.table_id] > 0:
+    # iterate through the dictionary and assign attendees
+    for table_id in tables_dict
 
+        if tables_dict[table.table_id] > 0:
+            attendee = Attendee.query.filter_by(attendee_id=attendee).first()
+            attendee.table_id = table_id
+            db.session.commit()
 
-    try 
-    #assign attendee to first table
+    # add the relationships for that attendee to the same table
+
+    # delete max number of seats everytime an attendee is assigned to the table
+
 
 
 

@@ -1,41 +1,34 @@
-import random 
-
-def find_random_attendee():
+def find_relationships():
  # calculate how many attendees the user created
     number_of_attendees = Attendee.query.count()
 
-    # pick a random number
-    attendee_id = random.randint(1, number_of_attendees)
+# store all the attendees
+    attendees = Attendee.query.all()
 
-    # store the attendee according to the random number
-    attendee = Attendee.query.get(attendee_id)
+    while number_of_attendees >= 0:
+# iterate through each attendee 
+        for attendee in attendees:
 
-    return attendee
+            # store the relationships for that attendee
+            relationships = db.session.query(SeatingRelationship).filter(
+                (SeatingRelationship.primary_attendee == attendee.attendee_id) | (
+                    SeatingRelationship.secondary_attendee == attendee.attendee_id)).all()
 
-attendee = find_random_attendee()
+            relationships_with_attendee = []
+            for r in relationships:
+                relationship_attendee = None
+                if r.primary_attendee == attendee.attendee_id:
+                    relationship_attendee = Attendee.query.get(r.secondary_attendee)
+                else:
+                    relationship_attendee = Attendee.query.get(r.primary_attendee)
 
-def find_relationships(attendee):
+                relationships_with_attendee.append((relationship_attendee, r.relationship_code))
 
-    # store the relationships for that attendee
-    relationships = db.session.query(SeatingRelationship).filter(
-        (SeatingRelationship.primary_attendee == attendee.attendee_id) | (
-            SeatingRelationship.secondary_attendee == attendee.attendee_id)).all()
-
-    print relationships
-
-    relationships_with_attendee = []
-    for r in relationships:
-        relationship_attendee = None
-        if r.primary_attendee == attendee.attendee_id:
-            relationship_attendee = Attendee.query.get(r.secondary_attendee)
-        else:
-            relationship_attendee = Attendee.query.get(r.primary_attendee)
-
-        relationships_with_attendee.append((relationship_attendee, r.relationship_code))
+        number_of_attendees -= 1
 
     return relationships_with_attendee
 
-relationships = find_relationships(attendee)
+relationships = find_relationships()
 
 # relationships prints out the following:
 #[(<Attendee attendee_id=34 first_name=Daniel last_name=Ball>, u'must'),
@@ -64,6 +57,7 @@ def table_assignments():
             db.session.commit()
 
     # add the relationships for that attendee to the same table
+
 
     # delete max number of seats everytime an attendee is assigned to the table
 

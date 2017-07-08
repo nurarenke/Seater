@@ -10,6 +10,7 @@ def table_assignments():
         attendees.append(attendee.attendee_id)
     
     # TODO: filter by event_id
+    # query for all table_ids
     tables = {}
     total_seats = 0;
     for table in db.session.query(Table).all():
@@ -35,6 +36,7 @@ def table_assignments():
         for table_id, seated_attendees in assignments.items():
             print str(table_id) + " | " + str(seated_attendees)
 
+        print assignments
         return assignments
 
 def assign_seats(clusters, relationships, tables):
@@ -59,14 +61,20 @@ def assign_seats(clusters, relationships, tables):
 def assign_seats_recursive(assignments, sorted_clusters, relationships, tables):
     ''' Attempt to seat a cluster at a table'''
 
+    # if you have already seated all your clusters, the length will return zero,
+    # so then we have seated everyone
     if len(sorted_clusters) == 0:
         return True
 
+    # take the first cluster
     cluster = sorted_clusters[0]
     cluster_size = len(cluster)
+
+    #create sets of the other relationships
     must_not_attendees = set()
     want_attendees = set()
 
+    # create sets of ids who have a must_not and a want relationship with the attendee
     for attendee_id in cluster:
         if 'must_not' in relationships[attendee_id]:
             must_not_attendees.update(relationships[attendee_id]['must_not'])
@@ -84,6 +92,7 @@ def assign_seats_recursive(assignments, sorted_clusters, relationships, tables):
             print "No table found for " + str(cluster) + ", returning False"
             return False
 
+        # if the table is not assigned, add it to the dictionary with an empty list
         if table_id not in assignments:
             assignments[table_id] = []
 
@@ -95,7 +104,7 @@ def assign_seats_recursive(assignments, sorted_clusters, relationships, tables):
 
         print "AFTER:  " + str(assignments[table_id])
 
-        # continue trying to seat the reamining clusters
+        # continue trying to seat the reamining clusters and cutting off each cluster as you go
         success = assign_seats_recursive(assignments, sorted_clusters[1:], relationships, tables)
 
         if not success:
@@ -128,6 +137,8 @@ def get_table_id_to_attempt(tables, cluster_size, attempted_tables, must_not_att
         -priorities the table with the most people we want to sit with
     '''
     # sort the tables so the biggest ones are first
+    # the lambda function take number of seats at a table and subtracts the number of seats assigned at that table
+    # giving back the number of available seats
     sorted_tables = sorted(tables.keys(), key=lambda table: -(tables[table] - len(assignments.get(table, []))))
 
     # sort the tables so the ones with the most wants at them are first

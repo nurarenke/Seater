@@ -1,6 +1,13 @@
 {% extends 'base.html' %}
 {% block title %}Events{% endblock %}
 {% block content %}
-<h2>Create and event</h2>
+<h2>Your Events</h2>
+<ul>
+{% for event in user_events %}
+    <li>{{ event.event_name }}</li>
+{% endfor %}
+</ul>
+<h2>Create an event</h2>
+
 
 {% endblock %}

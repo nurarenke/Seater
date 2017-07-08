@@ -7,6 +7,8 @@ from flask_debugtoolbar import DebugToolbarExtension
 
 from model import connect_to_db, db, User, Attendee, Event, Table, SeatingRelationship
 
+from assignments import table_assignments
+
 
 app = Flask(__name__)
 
@@ -75,7 +77,7 @@ def login_process():
     session["user_id"] = user.user_id
 
     flash("Logged in")
-    return render_template("/events.html")
+    return redirect("/")
 
 @app.route('/logout')
 def logout():
@@ -85,11 +87,20 @@ def logout():
     flash("Logged Out.")
     return redirect("/")
 
-@app.route('/events')
+@app.route('/events/')
 def display_events():
     '''Displays user's events'''
 
-    return render_template('/events.html')
+    user_id = session.get("user_id")
+
+    if user_id:
+        user_events = Event.query.filter_by(user_id = user_id).all()
+
+    else:
+        user_events = None
+
+    return render_template('/events.html',
+                            user_events=user_events)
 
 @app.route('/event-info')
 def display_attendee_list():
@@ -195,7 +206,16 @@ def table_detail(table_id):
 def assign_tables():
     '''assign tables'''
 
-pass
+    assignments = table_assignments()
+
+    for attendee_id in assignments[1]:
+        attendee = db.session.query(Attendee).filter(
+            Attendee.attendee_id==attendee_id).first()
+        attendee.table_id = 1
+        db.session.add(attendee)   
+
+        return render_template()
+    pass
 
 
 if __name__ == "__main__":

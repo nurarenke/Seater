@@ -210,12 +210,17 @@ def assign_tables():
 
     assignments = table_assignments()
 
+    print assignments
+
     for attendee_id in assignments[1]:
         attendee = db.session.query(Attendee).filter(
             Attendee.attendee_id==attendee_id).first()
+        print attendee
         attendee.table_id = 1
+        print attendee.table_id
         db.session.add(attendee)
-        db.session.commit()
+    
+    db.session.commit()
 
     table_one_attendees = db.session.query(Attendee).filter(Attendee.table_id == 1).all()
 

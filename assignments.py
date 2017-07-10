@@ -1,5 +1,4 @@
 from model import connect_to_db, db, User, Attendee, Event, Table, SeatingRelationship
-from server import app
 
 # db = SQLAlchemy()
 def table_assignments():
@@ -261,5 +260,7 @@ def build_relationships(attendees):
 
 
 if __name__ == "__main__":
+    from server import app
+
     connect_to_db(app)
     table_assignments()

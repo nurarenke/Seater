@@ -176,20 +176,22 @@ def update_relationship(attendee_id):
 def create_tables():
     '''create tables'''
 
-    event_id = 1
+    if request.form['btn'] == 'Submit':
 
-    # retrieve values from the form
-    table_name = request.form['table-name']
+        event_id = 1
 
-    max_seats = int(request.form['max-seats'])
+        # retrieve values from the form
+        table_name = request.form['table-name']
 
-    # add the table to the database
-    table = Table(event_id=event_id,
-                    table_name=table_name,
-                    max_seats=max_seats)
+        max_seats = int(request.form['max-seats'])
 
-    db.session.add(table)
-    db.session.commit()
+        # add the table to the database
+        table = Table(event_id=event_id,
+                        table_name=table_name,
+                        max_seats=max_seats)
+
+        db.session.add(table)
+        db.session.commit()
 
     return redirect('/event-info')
 
@@ -202,7 +204,7 @@ def table_detail(table_id):
     return render_template('/table-info.html',
                             table=table)
 
-@app.route('/table_assignments')
+@app.route('/table_assignments', methods=['POST'])
 def assign_tables():
     '''assign tables'''
 
@@ -212,10 +214,14 @@ def assign_tables():
         attendee = db.session.query(Attendee).filter(
             Attendee.attendee_id==attendee_id).first()
         attendee.table_id = 1
-        db.session.add(attendee)   
+        db.session.add(attendee)
+        db.session.commit()
 
-        return render_template()
-    pass
+    table_one_attendees = db.session.query(Attendee).filter(Attendee.table_id == 1).all()
+
+    return render_template('/table-assignments.html',
+                            table_one_attendees=table_one_attendees)
+ 
 
 
 if __name__ == "__main__":

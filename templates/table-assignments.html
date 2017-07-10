@@ -2,9 +2,9 @@
 {% block title %}Table Arrangments{% endblock %}
 {% block content %}
 <div>
-<h2>Table One</h2>
+<h2>Table Assignments</h2>
 <ul>
-{% for attendee in table_one_attendees %}
+{% for attendee in assigned_attendees %}
     <li>{{ attendee.first_name }}, {{ attendee.last_name }}, {{ attendee.table_id }}</li>
 {% endfor %}
 </ul>

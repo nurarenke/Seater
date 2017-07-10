@@ -210,22 +210,30 @@ def assign_tables():
 
     assignments = table_assignments()
 
-    print assignments
+    # query for how many tables the user created
+    event_id = 1
+    table_count = db.session.query(Table).filter(Table.event_id == event_id).count()
+    table_numbers = range(1, (table_count + 1))
 
-    for attendee_id in assignments[1]:
-        attendee = db.session.query(Attendee).filter(
-            Attendee.attendee_id==attendee_id).first()
-        print attendee
-        attendee.table_id = 1
-        print attendee.table_id
-        db.session.add(attendee)
-    
+    # add attendees to the appropiate table in the database
+    while table_count > 0:
+        for table_number in table_numbers:
+            for attendee_id in assignments[table_number]:
+                attendee = db.session.query(Attendee).filter(
+                    Attendee.attendee_id==attendee_id).first()
+                attendee.table_id = table_number
+                table_count -= 1
+                db.session.add(attendee)
+        
     db.session.commit()
 
-    table_one_attendees = db.session.query(Attendee).filter(Attendee.table_id == 1).all()
+    # query for all of attendees who are assigned to a table
+    assigned_attendees = db.session.query(Attendee).filter(Attendee.table_id != None).join(
+        Table).order_by(Attendee.table_id).all()
+
 
     return render_template('/table-assignments.html',
-                            table_one_attendees=table_one_attendees)
+                            assigned_attendees=assigned_attendees)
  
 
 

@@ -8,7 +8,7 @@
     <ul>
       {% for attendee in attendees | sort(attribute='last_name') %}
           <li>
-              <a href="/attendee/{{ attendee.attendee_id }}">
+              <a href="/attendee/{{ attendee.attendee_id}}/{{ attendee.event_id }}">
                 {{ attendee.first_name }} {{ attendee.last_name }}
               </a>
           </li>
@@ -19,8 +19,8 @@
 <!--Create a Table-->
 <div>
     <h2>Create your Tables:</h2>
-
-    <form action='/create-tables' method='POST'>
+  
+    <form action='/create-tables/' method='POST'>
 
     <label>Table Name</label>
     <input type='text' name='table-name'><br><br>

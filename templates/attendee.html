@@ -27,6 +27,14 @@
 
   <div class=attendee-info>Event Attending: {{ attendee.event.event_name }}
   </div>
+  <!--table assignment-->
+  <div class=attendee-info>
+  {% if attendee.table_id %}
+    Assigned Table: <a href='/table-info/{{ attendee.table_id }}'>{{ attendee.table_id }}, {{ attendee.table.table_name }}</a>
+  {% else %}
+    Assigned Table: Not Assigned Yet
+  {% endif %}
+  </div>
 </div>
 <!--create relationships-->
 <div>

@@ -102,11 +102,10 @@ def display_events():
     return render_template('/events.html',
                             user_events=user_events)
 
-@app.route('/event-info')
-def display_attendee_list():
+@app.route('/event-info/<int:event_id>')
+def display_attendee_list(event_id):
     '''displays a list of attendees and tables for a particular event'''
 
-    event_id = 1
     attendees = Attendee.query.filter_by(event_id=event_id).all()
 
     tables = Table.query.filter_by(event_id=event_id).all()
@@ -116,15 +115,14 @@ def display_attendee_list():
                             attendees=attendees,
                             tables=tables)
 
-@app.route('/attendee/<int:attendee_id>')
-def attendee_detail(attendee_id):
+@app.route('/attendee/<int:attendee_id>/<int:event_id>')
+def attendee_detail(attendee_id, event_id):
     '''Show info about user and relationships.'''
 
     # store the attendee_id from the page
     attendee = Attendee.query.get(attendee_id)
 
     # query for all attendees with the same event_id
-    event_id = 1
     attendees = Attendee.query.filter_by(event_id=event_id).all()
 
     # store the query for relationships for the attendee
@@ -172,26 +170,26 @@ def update_relationship(attendee_id):
 
     return redirect('/attendee/{}'.format(attendee.attendee_id))
 
-@app.route('/create-tables', methods=['POST'])
+@app.route('/create-tables/', methods=['POST'])
 def create_tables():
     '''create tables'''
 
-    if request.form['btn'] == 'Submit':
+    # retrieve values from the form
+    table_name = request.form['table-name']
 
-        event_id = 1
+    max_seats = int(request.form['max-seats'])
 
-        # retrieve values from the form
-        table_name = request.form['table-name']
+    user_id = session.get("user_id")
 
-        max_seats = int(request.form['max-seats'])
+    event_id = db.session.query(Event.event_id).filter(Event.user_id == user_id).first()
 
-        # add the table to the database
-        table = Table(event_id=event_id,
-                        table_name=table_name,
-                        max_seats=max_seats)
+    # add the table to the database
+    table = Table(event_id=event_id,
+                    table_name=table_name,
+                    max_seats=max_seats)
 
-        db.session.add(table)
-        db.session.commit()
+    db.session.add(table)
+    db.session.commit()
 
     return redirect('/event-info')
 
@@ -201,8 +199,11 @@ def table_detail(table_id):
 
     table = Table.query.get(table_id)
 
+    seated_at_table = Attendee.query.filter_by(table_id=table_id).all()
+
     return render_template('/table-info.html',
-                            table=table)
+                            table=table,
+                            seated_at_table=seated_at_table)
 
 @app.route('/table_assignments', methods=['POST'])
 def assign_tables():
@@ -211,7 +212,8 @@ def assign_tables():
     assignments = table_assignments()
 
     # query for how many tables the user created
-    event_id = 1
+    user_id = session.get("user_id")
+    event_id = db.session.query(Event.event_id).filter(Event.user_id == user_id).first()
     table_count = db.session.query(Table).filter(Table.event_id == event_id).count()
     table_numbers = range(1, (table_count + 1))
 

@@ -6,4 +6,14 @@
 <h3>Max Seats: {{ table.max_seats }}</h3>
 </div>
 
+<div>
+<h2>Seated at Table</h2>
+<ul>
+    {% for attendee in seated_at_table %}
+    <li><a href="/attendee/{{ attendee.attendee_id }}">{{ attendee.first_name }} {{ attendee.last_name }}</a></li>
+    {% endfor %}
+    
+</ul>
+</div>
+
 {% endblock %}

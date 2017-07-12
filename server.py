@@ -237,7 +237,20 @@ def assign_tables():
     return render_template('/table-assignments.html',
                             assigned_attendees=assigned_attendees)
  
+@app.route('/assignment-info.json')
+def get_assignment_info():
+    '''Get delivery info'''
 
+    assigned_attendees = db.session.query(Attendee).filter(Attendee.table_id != None).join(
+        Table).order_by(Attendee.table_id).all()
+
+    return jsonify(assigned_attendees)
+
+@app.route('/dynamic-table-display')
+def display_tables_dynamically():
+    '''Display tables dynamically'''
+
+    return render_template('/dynamic-table-display.html')
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the point

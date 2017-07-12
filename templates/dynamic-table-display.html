@@ -17,6 +17,7 @@
 <body>
 <div id="container"></div>
 <script>
+  //create the stage
     var width = window.innerWidth;
     var height = window.innerHeight;
     var stage = new Konva.Stage({
@@ -24,31 +25,65 @@
         width: width,
         height: height
     });
+  //create layer one
     var shapesLayer = new Konva.Layer();
+  
+  //create a group
     var group = new Konva.Group({
         draggable: true
     });
-    var colors = ['red', 'orange', 'yellow', 'green', 'blue', 'purple'];
-    for(var i = 0; i < 6; i++) {
-        var box = new Konva.Rect({
-            x: i * 30 + 10,
-            y: i * 18 + 40,
-            width: 100,
-            height: 50,
-            name: colors[i],
-            fill: colors[i],
-            stroke: 'black',
-            strokeWidth: 4
-        });
-        group.add(box);
-    }
+  // create text
+  var complexText = new Konva.Text({
+      x: 60,
+      y: 50,
+      text: 'Nura Renke',
+      fontSize: 18,
+      fontFamily: 'Calibri',
+      fill: '#555',
+      width: 100,
+      padding: 10,
+      align: 'center'
+    });
+  
+  //create seats
+    var seat1 = new Konva.Circle({
+        x: 60,
+        y: 50,
+        width: 200,
+        height: 50,
+        name: seat1,
+        fill: 'yellow',
+        stroke: 'black',
+        strokeWidth: 4
+    });
+    var seat2 = new Konva.Circle({
+        x: 100,
+        y: 200,
+        width: 100,
+        height: 50,
+        name: seat2,
+        fill: 'yellow',
+        stroke: 'black',
+        strokeWidth: 4
+    });
+  
+  
+  //add seats to the group so that they move around together
+    group.add(seat1);
+    group.add(complexText);
+    group.add(seat2);
+  
     group.on('mouseover', function() {
         document.body.style.cursor = 'pointer';
     });
     group.on('mouseout', function() {
         document.body.style.cursor = 'default';
     });
+  
+  // add group to layer one
     shapesLayer.add(group);
+  
+  // add layer one to the stage
     stage.add(shapesLayer);
 </script>
 </body>

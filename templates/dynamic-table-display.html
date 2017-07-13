@@ -36,8 +36,7 @@
   function getJson(evt) {
     evt.preventDefault();
 
-    $.get('/assignment-info.json',
-          showJson);
+    $.get('/assignment-info.json', showJson);
 
   }
   $('#json-form').on('submit', getJson);
@@ -60,6 +59,7 @@
     var tableOne = new Konva.Group({
         draggable: true
     });
+
   // create text
   var complexText = new Konva.Text({
       x: 60,

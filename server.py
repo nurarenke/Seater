@@ -115,6 +115,39 @@ def display_attendee_list(event_id):
                             attendees=attendees,
                             tables=tables)
 
+@app.route('/create-attendee', methods=['POST'])
+def create_attendee():
+    '''Create an attendee in the database'''
+
+    # get form values
+    first_name = request.form.get('first_name') 
+    last_name = request.form.get('last_name') 
+    email = request.form.get('email')
+    street = request.form.get('street') 
+    city = request.form.get('city')
+    state = request.form.get('state') 
+    zipcode = request.form.get('zipcode') 
+    vip = request.form.get('vip', False)
+    meal_request = request.form.get('meal_request') 
+    note = request.form.get('note')
+   
+    # update the database
+    new_attendee = Attendee(first_name=first_name,
+                            last_name=last_name,
+                            email=email,
+                            street=street,
+                            city=city,
+                            state=state,
+                            zipcode=zipcode,
+                            vip=vip,
+                            meal_request=meal_request,
+                            note=note)
+    flash('Attendee added.')
+    db.session.add(new_attendee)
+    db.session.commit()
+    print 'return'
+    return redirect('/attendee/{}'.format(attendee.attendee_id))
+
 @app.route('/attendee/<int:attendee_id>/<int:event_id>')
 def attendee_detail(attendee_id, event_id):
     '''Show info about user and relationships.'''
@@ -237,43 +270,43 @@ def assign_tables():
     return render_template('/table-assignments.html',
                             assigned_attendees=assigned_attendees)
  
-@app.route('/assignment-info.json')
-def get_assignment_info():
-    '''Get delivery info'''
+# @app.route('/assignment-info.json')
+# def get_assignment_info():
+#     '''Get delivery info'''
 
-    # query for assigned attendees
-assigned_attendees = db.session.query(Attendee.table_id, Attendee.first_name,
-    Attendee.last_name, Attendee.attendee_id).filter(Attendee.table_id != None).join(
-    Table).order_by(Attendee.table_id).all()
+#     # query for assigned attendees
+# assigned_attendees = db.session.query(Attendee.table_id, Attendee.first_name,
+#     Attendee.last_name, Attendee.attendee_id).filter(Attendee.table_id != None).join(
+#     Table).order_by(Attendee.table_id).all()
 
-# refractor sqlalchemy objects into json format
+# # refractor sqlalchemy objects into json format
 
-table_assignments = []
+# table_assignments = []
 
-# for table_id, first_name, last_name, attendee_id in attendees_info:
-#     if table_id in table_assignments:
-#         table_assignments[table_id]['first_name'].append(first_name)
-#         table_assignments[table_id]['last_name'].append(last_name)
-#         table_assignments[table_id]['attendee_id'].append(attendee_id)
-#     else:
-        table_assignments.append({'table_id':table_id, 'attendees':[] })
+# # for table_id, first_name, last_name, attendee_id in attendees_info:
+# #     if table_id in table_assignments:
+# #         table_assignments[table_id]['first_name'].append(first_name)
+# #         table_assignments[table_id]['last_name'].append(last_name)
+# #         table_assignments[table_id]['attendee_id'].append(attendee_id)
+# #     else:
+#         table_assignments.append({'table_id':table_id, 'attendees':[] })
 
-#pseudo code:
-# data = []
+# #pseudo code:
+# # data = []
 
-# for table in tables:
-#     table_data = {'table_id': table.id, 'guests': []}
+# # for table in tables:
+# #     table_data = {'table_id': table.id, 'guests': []}
 
-#     for guest in table.guests:
-#         table_data['guests'].append({'guest_id': guest.id, 'name': guest.name})
-
-
-    data.append(table_data)
-
-return jsonify({'results': data})
+# #     for guest in table.guests:
+# #         table_data['guests'].append({'guest_id': guest.id, 'name': guest.name})
 
 
-    return jsonify(table_assignments)
+#     data.append(table_data)
+
+# return jsonify({'results': data})
+
+
+#     return jsonify(table_assignments)
 
 @app.route('/dynamic-table-display')
 def display_tables_dynamically():

@@ -2,7 +2,7 @@
 
 from jinja2 import StrictUndefined
 
-from flask import Flask, render_template, request, flash, redirect, session
+from flask import Flask, render_template, request, flash, redirect, session, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 
 from model import connect_to_db, db, User, Attendee, Event, Table, SeatingRelationship
@@ -241,10 +241,39 @@ def assign_tables():
 def get_assignment_info():
     '''Get delivery info'''
 
-    assigned_attendees = db.session.query(Attendee).filter(Attendee.table_id != None).join(
-        Table).order_by(Attendee.table_id).all()
+    # query for assigned attendees
+assigned_attendees = db.session.query(Attendee.table_id, Attendee.first_name,
+    Attendee.last_name, Attendee.attendee_id).filter(Attendee.table_id != None).join(
+    Table).order_by(Attendee.table_id).all()
 
-    return jsonify(assigned_attendees)
+# refractor sqlalchemy objects into json format
+
+table_assignments = []
+
+# for table_id, first_name, last_name, attendee_id in attendees_info:
+#     if table_id in table_assignments:
+#         table_assignments[table_id]['first_name'].append(first_name)
+#         table_assignments[table_id]['last_name'].append(last_name)
+#         table_assignments[table_id]['attendee_id'].append(attendee_id)
+#     else:
+        table_assignments.append({'table_id':table_id, 'attendees':[] })
+
+#pseudo code:
+# data = []
+
+# for table in tables:
+#     table_data = {'table_id': table.id, 'guests': []}
+
+#     for guest in table.guests:
+#         table_data['guests'].append({'guest_id': guest.id, 'name': guest.name})
+
+
+    data.append(table_data)
+
+return jsonify({'results': data})
+
+
+    return jsonify(table_assignments)
 
 @app.route('/dynamic-table-display')
 def display_tables_dynamically():

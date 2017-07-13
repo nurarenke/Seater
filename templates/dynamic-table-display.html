@@ -3,6 +3,8 @@
 <html>
 <head>
     <script src="https://cdn.rawgit.com/konvajs/konva/1.6.3/konva.min.js"></script>
+    <script src="https://code.jquery.com/jquery.js"></script>
+
     <meta charset="utf-8">
     <title>Konva Drag and Drop a Group Demo</title>
     <style>
@@ -10,16 +12,42 @@
             margin: 0;
             padding: 0;
             overflow: hidden;
-            background-color: #F0F0F0;
+        }
+
+        #container {
+          background-color: gray;
+
         }
     </style>
 </head>
 <body>
+
 <div id="container"></div>
+<form id='json-form' action='/table_assignments' method="GET">
+  <input type='submit' name='btn' value='Get Json'>
+</form>
+
 <script>
+"use strict";
+  function showJson(json) {
+    console.log(json);
+  }
+
+  function getJson(evt) {
+    evt.preventDefault();
+
+    $.get('/assignment-info.json',
+          showJson);
+
+  }
+  $('#json-form').on('submit', getJson);
+</script>
+
+<script>
+"use strict";
   //create the stage
-    var width = window.innerWidth;
-    var height = window.innerHeight;
+    var width = 600;
+    var height = 600;
     var stage = new Konva.Stage({
         container: 'container',
         width: width,
@@ -29,7 +57,7 @@
     var shapesLayer = new Konva.Layer();
   
   //create a group
-    var group = new Konva.Group({
+    var tableOne = new Konva.Group({
         draggable: true
     });
   // create text
@@ -69,19 +97,19 @@
   
   
   //add seats to the group so that they move around together
-    group.add(seat1);
-    group.add(complexText);
-    group.add(seat2);
+    tableOne.add(seat1);
+    tableOne.add(complexText);
+    tableOne.add(seat2);
   
-    group.on('mouseover', function() {
+    tableOne.on('mouseover', function() {
         document.body.style.cursor = 'pointer';
     });
-    group.on('mouseout', function() {
+    tableOne.on('mouseout', function() {
         document.body.style.cursor = 'default';
     });
   
-  // add group to layer one
-    shapesLayer.add(group);
+  // add tableOne to layer one
+    shapesLayer.add(tableOne);
   
   // add layer one to the stage
     stage.add(shapesLayer);

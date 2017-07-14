@@ -18,12 +18,12 @@ app.secret_key = "ABC"
 # Normally, if you use an undefined variable in Jinja2, it fails silently.
 # This is horrible. Fix this so that, instead, it raises an error.
 app.jinja_env.undefined = StrictUndefined
-
+app.jinja_env.auto_reload = True
 
 @app.route('/')
 def index():
     """Homepage."""
-
+    print "here i am"
     return render_template("homepage.html")
 
 @app.route('/register', methods=['GET'])
@@ -87,12 +87,14 @@ def logout():
     flash("Logged Out.")
     return redirect("/")
 
-@app.route('/events/')
+@app.route('/events', methods=['GET'])
 def display_events():
     '''Displays user's events'''
 
+    # grab the user_id
     user_id = session.get("user_id")
 
+    # query for events based on the user_id
     if user_id:
         user_events = Event.query.filter_by(user_id = user_id).all()
 
@@ -101,6 +103,31 @@ def display_events():
 
     return render_template('/events.html',
                             user_events=user_events)
+
+@app.route('/events', methods=['POST'])
+def add_event():
+    '''Update the database with new event'''
+
+    # grab the user_id from the session
+    user_id = session.get("user_id")
+
+    # get form values
+    event_name = request.form.get('event_name')
+    event_description = request.form.get('event_description')
+    location = request.form.get('location')
+    time = request.form.get('time')
+
+    # insert new event into database
+    new_event = Event(event_name=event_name,
+                    event_description=event_description,
+                    location=location,
+                    time=time,
+                    user_id=user_id)
+
+    db.session.add(new_event)
+    db.session.commit()
+
+    return redirect('/events')
 
 @app.route('/event-info/<int:event_id>')
 def display_attendee_list(event_id):
@@ -127,26 +154,35 @@ def create_attendee():
     city = request.form.get('city')
     state = request.form.get('state') 
     zipcode = request.form.get('zipcode') 
-    vip = request.form.get('vip', False)
     meal_request = request.form.get('meal_request') 
     note = request.form.get('note')
+    is_vip = request.form.get('vip')
+    if is_vip == 'True':
+        is_vip = True
+    else:
+        is_vip = False
+
+    user_id = session.get("user_id")
+    event_id = db.session.query(Event.event_id).filter(Event.user_id == user_id).first()
    
     # update the database
     new_attendee = Attendee(first_name=first_name,
                             last_name=last_name,
-                            email=email,
+                            attendee_email=email,
                             street=street,
                             city=city,
                             state=state,
                             zipcode=zipcode,
-                            vip=vip,
+                            is_vip=is_vip,
                             meal_request=meal_request,
-                            note=note)
+                            note=note,
+                            event_id=event_id)
     flash('Attendee added.')
     db.session.add(new_attendee)
     db.session.commit()
-    print 'return'
-    return redirect('/attendee/{}'.format(attendee.attendee_id))
+   
+    return redirect('/attendee/{}/{}'.format(
+                    new_attendee.attendee_id, new_attendee.event_id))
 
 @app.route('/attendee/<int:attendee_id>/<int:event_id>')
 def attendee_detail(attendee_id, event_id):

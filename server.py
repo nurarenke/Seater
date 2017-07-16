@@ -26,12 +26,6 @@ def index():
 
     return render_template("homepage.html")
 
-@app.route('/register', methods=['GET'])
-def register_form():
-    """Show form for user signup."""
-
-    return render_template("register-form.html")
-
 
 @app.route('/register', methods=['POST'])
 def register_process():
@@ -42,19 +36,20 @@ def register_process():
     password = request.form['password']
     name = request.form['name']
 
-    new_user = User(email=email, password=password, name=name)
+    # Check to see if the user is already registered
+    if db.session.query(User).filter(User.email == email).all():
+        flash('You are already registered with that email')
+        return redirect('/')
 
+    # If it's a new email, add the user to the database
+    new_user = User(email=email, password=password, name=name)
     db.session.add(new_user)
     db.session.commit()
+    session["user_id"] = new_user.user_id
 
-    flash("User {} added.".format(name))
-    return render_template('/events.html')
+    flash("Welcome {}".format(name))
+    return redirect('/events')
 
-@app.route('/login', methods=['GET'])
-def login_form():
-    '''Show login form'''
-
-    return render_template('login-form.html')
 
 @app.route('/login', methods=['POST'])
 def login_process():
@@ -77,7 +72,7 @@ def login_process():
     session["user_id"] = user.user_id
 
     flash("Logged in")
-    return redirect("/")
+    return redirect("/events")
 
 @app.route('/logout')
 def logout():
@@ -152,7 +147,7 @@ def display_attendee_list(event_id):
                             attendees=attendees,
                             tables=tables)
 
-@app.route('/create-attendee', methods=['POST'])
+@app.route('/create-attendee/', methods=['POST'])
 def create_attendee():
     '''Create an attendee in the database'''
     if is_not_logged_in():
@@ -302,28 +297,26 @@ def assign_tables():
         return redirect('/')
 
     assignments = table_assignments()
+    # check if assignments None
 
     # query for how many tables the user created
     user_id = session.get("user_id")
     event_id = db.session.query(Event.event_id).filter(Event.user_id == user_id).first()
-    table_count = db.session.query(Table).filter(Table.event_id == event_id).count()
-    table_numbers = range(1, (table_count + 1))
-
+   
     # add attendees to the appropiate table in the database
-    while table_count > 0:
-        for table_number in table_numbers:
-            for attendee_id in assignments[table_number]:
-                attendee = db.session.query(Attendee).filter(
-                    Attendee.attendee_id==attendee_id).first()
-                attendee.table_id = table_number
-                table_count -= 1
-                db.session.add(attendee)
+
+    for table_id, attendee_ids in assignments.items():
+        for attendee_id in attendee_ids:
+            attendee = db.session.query(Attendee).filter(
+                Attendee.attendee_id==attendee_id).first()
+            attendee.table_id = table_id
+            db.session.add(attendee)
         
     db.session.commit()
 
- # query for all of attendees who are assigned to a table
-    assigned_attendees = db.session.query(Attendee).filter(Attendee.table_id != None).join(
-        Table).order_by(Attendee.table_id).all()
+    # query for all of attendees who are assigned to a table
+    assigned_attendees = db.session.query(Attendee).filter(Attendee.event_id == event_id, Attendee.table_id != None).join(
+        Table).order_by(Table.table_name).all()
 
     if session.get('user_id'):
         return render_template('/table-assignments.html',

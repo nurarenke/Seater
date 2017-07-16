@@ -2,8 +2,15 @@
 {% block title %}Event Info{% endblock %}
 {% block content %}
 <div class="well spaced" style="width:40%;">
+<!--Display event info-->
+  <h1>{{ event.event_name }}</h1>
+  <div>Description: {{ event.event_description }}</div>
+  <div>Location: {{ event.location }}</div>
+  <div>Time: {{ event.time }}</div>
+</div>
+<div class="well spaced" style="width:40%;">
 <!--Create an Attendee-->
-<h2>Add an Attendee</h2>
+  <h2>Add an Attendee</h2>
 
   <form id='add_attendee_form' class="form-horizontal" action='/create-attendee' method='POST'>
     <div class="form-group">

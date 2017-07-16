@@ -13,7 +13,7 @@ from assignments import table_assignments
 app = Flask(__name__)
 
 # Required to use Flask sessions and the debug toolbar
-app.secret_key = "ABC"
+app.secret_key = "Lava12#$!!"
 
 # Normally, if you use an undefined variable in Jinja2, it fails silently.
 # This is horrible. Fix this so that, instead, it raises an error.
@@ -23,7 +23,7 @@ app.jinja_env.auto_reload = True
 @app.route('/')
 def index():
     """Homepage."""
-    print "here i am"
+
     return render_template("homepage.html")
 
 @app.route('/register', methods=['GET'])
@@ -133,12 +133,15 @@ def add_event():
 def display_attendee_list(event_id):
     '''displays a list of attendees and tables for a particular event'''
 
+    event = Event.query.get(event_id)
+
     attendees = Attendee.query.filter_by(event_id=event_id).all()
 
     tables = Table.query.filter_by(event_id=event_id).all()
 
 
     return render_template('event-info.html', 
+                            event=event,
                             attendees=attendees,
                             tables=tables)
 

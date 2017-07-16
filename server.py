@@ -90,6 +90,8 @@ def logout():
 @app.route('/events', methods=['GET'])
 def display_events():
     '''Displays user's events'''
+    if is_not_logged_in():
+        return redirect('/')
 
     # grab the user_id
     user_id = session.get("user_id")
@@ -107,6 +109,8 @@ def display_events():
 @app.route('/events', methods=['POST'])
 def add_event():
     '''Update the database with new event'''
+    if is_not_logged_in():
+        return redirect('/')
 
     # grab the user_id from the session
     user_id = session.get("user_id")
@@ -124,6 +128,7 @@ def add_event():
                     time=time,
                     user_id=user_id)
 
+    flash('Event added.')
     db.session.add(new_event)
     db.session.commit()
 
@@ -132,6 +137,8 @@ def add_event():
 @app.route('/event-info/<int:event_id>')
 def display_attendee_list(event_id):
     '''displays a list of attendees and tables for a particular event'''
+    if is_not_logged_in():
+        return redirect('/')
 
     event = Event.query.get(event_id)
 
@@ -148,6 +155,8 @@ def display_attendee_list(event_id):
 @app.route('/create-attendee', methods=['POST'])
 def create_attendee():
     '''Create an attendee in the database'''
+    if is_not_logged_in():
+        return redirect('/')
 
     # get form values
     first_name = request.form.get('first_name') 
@@ -190,6 +199,8 @@ def create_attendee():
 @app.route('/attendee/<int:attendee_id>/<int:event_id>')
 def attendee_detail(attendee_id, event_id):
     '''Show info about user and relationships.'''
+    if is_not_logged_in():
+        return redirect('/')
 
     # store the attendee_id from the page
     attendee = Attendee.query.get(attendee_id)
@@ -224,6 +235,8 @@ def attendee_detail(attendee_id, event_id):
 @app.route('/attendee/<int:attendee_id>', methods=['POST'])
 def update_relationship(attendee_id):
     '''update relationship of the user in the database'''
+    if is_not_logged_in():
+        return redirect('/')
 
     attendee = Attendee.query.get(attendee_id)
 
@@ -245,6 +258,8 @@ def update_relationship(attendee_id):
 @app.route('/create-tables/', methods=['POST'])
 def create_tables():
     '''create tables'''
+    if is_not_logged_in():
+        return redirect('/')
 
     # retrieve values from the form
     table_name = request.form['table-name']
@@ -268,6 +283,8 @@ def create_tables():
 @app.route('/table-info/<int:table_id>')
 def table_detail(table_id):
     '''Show info about a table.'''
+    if is_not_logged_in():
+        return redirect('/')
 
     table = Table.query.get(table_id)
 
@@ -277,9 +294,12 @@ def table_detail(table_id):
                             table=table,
                             seated_at_table=seated_at_table)
 
-@app.route('/table_assignments', methods=['POST'])
+
+@app.route('/table-assignments', methods=['GET','POST'])
 def assign_tables():
     '''assign tables'''
+    if is_not_logged_in():
+        return redirect('/')
 
     assignments = table_assignments()
 
@@ -301,13 +321,19 @@ def assign_tables():
         
     db.session.commit()
 
-    # query for all of attendees who are assigned to a table
+ # query for all of attendees who are assigned to a table
     assigned_attendees = db.session.query(Attendee).filter(Attendee.table_id != None).join(
         Table).order_by(Attendee.table_id).all()
 
-
-    return render_template('/table-assignments.html',
+    if session.get('user_id'):
+        return render_template('/table-assignments.html',
                             assigned_attendees=assigned_attendees)
+    
+def is_not_logged_in():
+    if not session.get('user_id'):
+        flash('You are currently not logged in')
+        return True
+    return False
  
 # @app.route('/assignment-info.json')
 # def get_assignment_info():
@@ -350,8 +376,11 @@ def assign_tables():
 @app.route('/dynamic-table-display')
 def display_tables_dynamically():
     '''Display tables dynamically'''
+    is_not_logged_in()
 
     return render_template('/dynamic-table-display.html')
+        
+
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the point

@@ -163,11 +163,7 @@ def create_attendee():
     zipcode = request.form.get('zipcode') 
     meal_request = request.form.get('meal_request') 
     note = request.form.get('note')
-    is_vip = request.form.get('vip')
-    if is_vip == 'True':
-        is_vip = True
-    else:
-        is_vip = False
+    is_vip = request.form.get('vip') == 'True'
 
     user_id = session.get("user_id")
     event_id = db.session.query(Event.event_id).filter(Event.user_id == user_id).first()
@@ -191,8 +187,16 @@ def create_attendee():
     return redirect('/attendee/{}/{}'.format(
                     new_attendee.attendee_id, new_attendee.event_id))
 
+@app.route('/attendee/<int:event_id>/new-attendee')
+def new_attendee(event_id):
+    '''Shows an empty attendee info page for filling out to make a new attendee.'''
+    attendee = None
+
+    return render_template("attendee.html",
+                            attendee=attendee)
+
 @app.route('/attendee/<int:attendee_id>/<int:event_id>')
-def attendee_detail(attendee_id, event_id):
+def edit_attendee(attendee_id, event_id):
     '''Show info about user and relationships.'''
     if is_not_logged_in():
         return redirect('/')
@@ -219,8 +223,6 @@ def attendee_detail(attendee_id, event_id):
             relationship_attendee = Attendee.query.get(r.primary_attendee)
 
         relationships_with_attendee.append((relationship_attendee, r.relationship_code)) 
-
-
 
     return render_template("attendee.html", 
                             attendee=attendee, 

@@ -1,6 +1,20 @@
 {% extends 'base.html' %}
 {% block title %}Tables{% endblock %}
 {% block content %}
+<!--Create a Table-->
+<div class='col-6'>
+  <h2>Create your Tables:</h2>
+
+  <form action='/create-tables/' method='POST'>
+
+  <label>Table Name</label>
+  <input type='text' name='table-name'><br><br>
+  <label>Number of Seats</label>
+  <input type='number' name='max-seats'>
+  <input type='submit' name='btn' value='Submit'>
+  </form>
+
+</div>
 <div>
 <h2>{{ table.table_name }}</h2>
 <h3>Max Seats: {{ table.max_seats }}</h3>

@@ -11,6 +11,7 @@
     <link rel="stylesheet" type="text/css" href="/static/mystyle.css">
 </head>
 <body>
+
 <div class="collapse navbar-collapse">
   <ul class="nav navbar-nav">
   {% if "user_id" in session %}
@@ -28,6 +29,7 @@
   {{ flash }}
 </div>
 {% endfor %}
+
 {% block content %}
 {% endblock %}
 

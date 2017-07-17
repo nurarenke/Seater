@@ -24,7 +24,7 @@
 <h2>Seated at Table</h2>
 <ul>
     {% for attendee in seated_at_table %}
-    <li><a href="/attendee/{{ attendee.attendee_id }}">{{ attendee.first_name }} {{ attendee.last_name }}</a></li>
+    <li><a href="/attendee/{{ attendee.event_id }}/{{ attendee.attendee_id }}">{{ attendee.first_name }} {{ attendee.last_name }}</a></li>
     {% endfor %}
     
 </ul>

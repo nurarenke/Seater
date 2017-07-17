@@ -2,8 +2,8 @@
 {% block title %}Event Info{% endblock %}
 {% block content %}
 
-<div class='row'>
-  <div class='col-12'>
+<div>
+  <div>
   <!--Display event info-->
     <h1>{{ event.event_name }}</h1>
     <div>Description: {{ event.event_description }}</div>
@@ -19,7 +19,7 @@
     <ul>
       {% for attendee in attendees | sort(attribute='last_name') %}
           <li>
-              <a href="/attendee/{{ attendee.attendee_id}}/{{ attendee.event_id }}">
+              <a href="/attendee/{{ attendee.event_id }}/{{ attendee.attendee_id}}">
                 {{ attendee.first_name }} {{ attendee.last_name }}
               </a>
           </li>

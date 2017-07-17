@@ -147,8 +147,8 @@ def display_attendee_list(event_id):
                             attendees=attendees,
                             tables=tables)
 
-@app.route('/create-attendee/', methods=['POST'])
-def create_attendee():
+@app.route('/create-attendee/<int:event_id>', methods=['POST'])
+def create_attendee(event_id):
     '''Create an attendee in the database'''
     if is_not_logged_in():
         return redirect('/')
@@ -166,7 +166,6 @@ def create_attendee():
     is_vip = request.form.get('vip') == 'True'
 
     user_id = session.get("user_id")
-    event_id = db.session.query(Event.event_id).filter(Event.user_id == user_id).first()
    
     # update the database
     new_attendee = Attendee(first_name=first_name,
@@ -185,18 +184,64 @@ def create_attendee():
     db.session.commit()
    
     return redirect('/attendee/{}/{}'.format(
-                    new_attendee.attendee_id, new_attendee.event_id))
+                    new_attendee.event_id,
+                    new_attendee.attendee_id))
 
 @app.route('/attendee/<int:event_id>/new-attendee')
 def new_attendee(event_id):
     '''Shows an empty attendee info page for filling out to make a new attendee.'''
     attendee = None
+    event_id = event_id
 
     return render_template("attendee.html",
-                            attendee=attendee)
+                            attendee=attendee,
+                            event_id=event_id)
 
-@app.route('/attendee/<int:attendee_id>/<int:event_id>')
-def edit_attendee(attendee_id, event_id):
+@app.route('/<int:event_id>/update-attendee/<int:attendee_id>', methods=['POST'])
+def delete_or_update_attendee(event_id, attendee_id):
+
+    if request.form['submit'] == 'Delete':
+        delete_attendee = Attendee.query.filter_by(attendee_id = attendee_id).first()
+
+        flash('{} {} has been removed'.format(delete_attendee.first_name,
+                                        delete_attendee.last_name))
+        db.session.delete(delete_attendee)
+        db.session.commit()
+
+        return redirect('/event-info/<int:event_id>')
+
+    elif request.form['submit'] == 'Update':
+        first_name = request.form.get('first_name') 
+        last_name = request.form.get('last_name') 
+        email = request.form.get('email')
+        street = request.form.get('street') 
+        city = request.form.get('city')
+        state = request.form.get('state') 
+        zipcode = request.form.get('zipcode') 
+        meal_request = request.form.get('meal_request') 
+        note = request.form.get('note')
+        is_vip = request.form.get('vip') == 'True'
+
+        updated_attendee = db.session.query(Attendee).filter(
+            Attendee.attendee_id==attendee_id).first()
+
+        attendee.first_name = first_name
+        attendee.last_name = last_name
+        attendee.email = email
+        attendee.street = street
+        attendee.city = city
+        attendee.state = state
+        attendee.zipcode = zipcode
+        attendee.meal_request = meal_request
+        attendee.note = note
+        attendee.is_vip = is_vip
+
+        db.session.add(updated_attendee)
+        db.session.commit()
+        
+
+@app.route('/attendee/<int:event_id>/<int:attendee_id>')
+def display_attendee(attendee_id, event_id):
     '''Show info about user and relationships.'''
     if is_not_logged_in():
         return redirect('/')

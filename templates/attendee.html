@@ -6,7 +6,7 @@
 <!--Create an Attendee-->
   <h2>Add an Attendee</h2>
 
-  <form id='add_attendee_form' class="form-horizontal" action='/create-attendee' method='POST'>
+  <form id='add_attendee_form' class="form-horizontal" action='/create-attendee/{{ event_id }}' method='POST'>
     <div class="form-group">
       <label>First Name</label>
         <input type='text' name='first_name' required>
@@ -54,83 +54,60 @@
   </form>
 </div>
 {% else %}
-<div class='col-6' class="well spaced" style="width:40%;">
-<!--Create an Attendee-->
-  <h2>Add an Attendee</h2>
+<div class="well spaced" style="width:40%;">
+<!--Update or delete an existing attendee-->
+  <h2>Edit an Attendee</h2>
 
-  <form id='add_attendee_form' class="form-horizontal" action='/create-attendee' method='POST'>
+  <form class="form-horizontal" action='{{ event_id }}/update-attendee/{{ attendee.attendee_id }}' method='POST'>
     <div class="form-group">
       <label>First Name</label>
         <input type='text' name='first_name' value='{{ attendee.first_name }}' required>
     </div>
     <div class="form-group">
       <label>Last Name</label>
-        <input type='text' name='last_name' value="'{{ attendee.last_name }}'" required>
+        <input type='text' name='last_name' value="{{ attendee.last_name }}" required>
     </div>
     <div class="form-group">
       <label>Email</label>
-        <input type='email' name='email'>
+        <input type='email' name='email' value="{{ attendee.attendee_email }}">
     </div>
     <div class="form-group">
       <label>Street</label>
-        <input type='text' name='street'>
+        <input type='text' name='street' value="{{ attendee.street }}">
     </div>
     <div class="form-group">
       <label>City</label>
-        <input type='text' name='city'>
+        <input type='text' name='city' value="{{ attendee.city }}">
     </div>
     <div class="form-group">
       <label>State</label>
-        <input type='text' name='state'>
+        <input type='text' name='state' value="{{ attendee.state }}">
     </div>
     <div class="form-group">
       <label>Zipcode</label>
-        <input type='number' name='zipcode'>
+        <input type='number' name='zipcode' value="{{ attendee.zipcode }}">
     </div>
     <div class="form-group">
       <label>Vip</label>
-       <input type='checkbox' name='vip' value='True'>
+       <input type='checkbox' name='vip' value='True' value="{{ attendee.is_vip }}">
     </div>
     <div class="form-group">
       <label>Meal Request</label>
-        <input type='text' name='meal_request'>
+        <input type='text' name='meal_request' value="{{ attendee.meal_request }}">
     </div>
     <div class="form-group">
       <label>Note</label>
-        <textarea rows="4" cols="50" name="note" form='add_attendee_form'>Enter text here...
+        <textarea rows="4" cols="50" name="note" form='edit_attendee_form' value="{{ attendee.note }}">
+        Enter text here...
         </textarea>
     </div>
     <div class="form-group">
-      <input type='submit' name='btn' value='Submit'>
+      <input id='save-btn' type='submit' name='submit' value='Save'>
+      <input id='delete-btn' type='submit' name='submit' value='Delete'>
     </div>
   </form>
 </div>
-<!--display attendee-->
-<div>
-  <h2>{{ attendee.first_name }} {{ attendee.last_name }}</h2>
 
-  <div class=attendee-info>Email: {{ attendee.attendee_email }}
-  </div>
-
-  <div class=attendee-info>Address: {{ attendee.street }}, {{ attendee.city }},
-   {{attendee.state }} {{ attendee.zipcode }}
-  </div>
-
-  <div class=attendee-info>Vip: {% if attendee.is_vip == 't' %} 
-        Yes
-        {% else %}
-        No
-        {% endif %}
-  </div>
-
-  <div class=attendee-info>Meal Request: {{ attendee.meal_request }}
-  </div>
-
-  <div class=attendee-info>Note: {{ attendee.note }}
-  </div>
-
-  <div class=attendee-info>Event Attending: {{ attendee.event.event_name }}
-  </div>
   <!--table assignment-->
   <div class=attendee-info>
   {% if attendee.table_id %}

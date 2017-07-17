@@ -234,23 +234,21 @@ def update_attendee(event_id, attendee_id):
     updated_attendee = db.session.query(Attendee).filter(
         Attendee.attendee_id==attendee_id).first()
 
-    attendee.first_name = first_name
-    attendee.last_name = last_name
-    attendee.email = email
-    attendee.street = street
-    attendee.city = city
-    attendee.state = state
-    attendee.zipcode = zipcode
-    attendee.meal_request = meal_request
-    attendee.note = note
-    attendee.is_vip = is_vip
+    updated_attendee.first_name = first_name
+    updated_attendee.last_name = last_name
+    updated_attendee.email = email
+    updated_attendee.street = street
+    updated_attendee.city = city
+    updated_attendee.state = state
+    updated_attendee.zipcode = zipcode
+    updated_attendee.meal_request = meal_request
+    updated_attendee.note = note
+    updated_attendee.is_vip = is_vip
 
     db.session.add(updated_attendee)
     db.session.commit()
     
-    return redirect('/attendee/<int:event_id>/<int:attendee_id>',
-                    event_id=event_id,
-                    attendee_id=attendee_id)
+    return redirect('/attendee/{}/{}'.format(event_id, attendee_id))
 
 @app.route('/attendee/<int:event_id>/<int:attendee_id>')
 def display_attendee(event_id, attendee_id):
@@ -354,8 +352,7 @@ def table_detail(table_id):
                             table=table,
                             seated_at_table=seated_at_table)
 
-
-@app.route('/table-assignments', methods=['GET','POST'])
+@app.route('/event=<int:event_id>/table-assignments/', methods=['POST'])
 def assign_tables():
     '''assign tables'''
     if is_not_logged_in():
@@ -378,15 +375,23 @@ def assign_tables():
             db.session.add(attendee)
         
     db.session.commit()
+    return render_template('/table-assignments/{}'.format())
 
+@app.route('/event=<int:event_id>/table-assignments/', methods=['GET'])
+def display_tables(event_id):
+    '''display tables'''
+    if is_not_logged_in():
+        return redirect('/')
+
+    event_id=event_id
     # query for all of attendees who are assigned to a table
     assigned_attendees = db.session.query(Attendee).filter(Attendee.event_id == event_id, Attendee.table_id != None).join(
         Table).order_by(Table.table_name).all()
 
-    if session.get('user_id'):
-        return render_template('/table-assignments.html',
-                            assigned_attendees=assigned_attendees)
-    
+    return render_template('/table-assignments.html',
+                            assigned_attendees=assigned_attendees,
+                            event_id=event_id)
+
 def is_not_logged_in():
     if not session.get('user_id'):
         flash('You are currently not logged in')

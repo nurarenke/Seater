@@ -58,7 +58,7 @@
 <!--Update or delete an existing attendee-->
   <h2>Edit an Attendee</h2>
 
-  <form class="form-horizontal" action='{{ event_id }}/update-attendee/{{ attendee.attendee_id }}' method='POST'>
+  <form class="form-horizontal" action='/{{ event_id }}/update-attendee/{{ attendee.attendee_id }}' method='POST'>
     <div class="form-group">
       <label>First Name</label>
         <input type='text' name='first_name' value='{{ attendee.first_name }}' required>
@@ -105,14 +105,15 @@
       <input id='save-btn' type='submit' name='submit' value='Save'>
     </div>
   </form> 
-   <form class="form-group" action='/{{event_id}}/delete-attendee/{{attendee.attendee_id}}'}} method='POST'>
+   <form class="form-horizontal" action='/{{event_id}}/delete-attendee/{{attendee.attendee_id}}'}} method='POST'>
+    <div class="form-group">
       <input id='delete-btn' type='submit' name='submit' value='Delete'>
+    </div>
   </form>
 </div>
-
-
   <!--table assignment-->
-  <div class=attendee-info>
+<div>
+<h2>Table Assignment</h2>
   {% if attendee.table_id %}
     Assigned Table: <a href='/table-info/{{ attendee.table_id }}'>{{ attendee.table_id }}, {{ attendee.table.table_name }}</a>
   {% else %}
@@ -144,7 +145,7 @@
 <!--list of relationships-->
 <div>
   <h2>Established Relationships</h2>
-
+  {% if relationships_with_attendee %}
   <ul>
       {% for secondary_attendee, relationship_code in relationships_with_attendee %}
       <li>
@@ -154,13 +155,11 @@
       </li>
       {% endfor %}
   </ul>
+  {% else %}
+  <p>No relationships yet.</p>
+  {% endif %}
+</div>
 
-</div>
-<div>
-<h2>Create your Seating Arrangements</h2>
-<form action='/table-assignments' method="POST">
-<input type='submit' name='btn' value='Create Seating Arrangements'>
-</div>
 {% endif %}
 {% endblock %}  
 

@@ -35,7 +35,7 @@
 </div>
 <!--Display your created tables-->
 <div>
-  <h2>Created Tables:</h2>
+  <h2>Tables:</h2>
   {% if tables %}
     <ul>
       {% for table in tables %}
@@ -49,7 +49,10 @@
     <div>You do not have any tables yet... </div>
   {% endif %}
 </div>
-
+<div>
+<h2>Table Assignments</h2>
+<a href="/event={{ event.event_id }}/table-assignments/"><button type="button">View Table Assignments</button></a>
+</div>
 
 {% endblock %}
 

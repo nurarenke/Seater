@@ -2,11 +2,23 @@
 {% block title %}Table Arrangments{% endblock %}
 {% block content %}
 <div>
+<!--Display seating arrangements-->
 <h2>Table Assignments</h2>
 <ul>
+{%if assigned_attendees %}
 {% for attendee in assigned_attendees %}
-    <li>{{ attendee.first_name }}, {{ attendee.last_name }}, {{ attendee.table_id }}</li>
+    <li>{{ attendee.first_name }}, {{ attendee.last_name }}, {{ attendee.table_id }}
+    </li>
 {% endfor %}
 </ul>
+{% else %}
+<p>No assignments yet.</p>
+{% endif %}
+</div>
+<!--Create Assignments Button-->
+<div>
+<h2>Create your Seating Arrangements</h2>
+<form action='/event={{ event_id }}/table-assignments/' method="POST">
+<input type='submit' name='btn' value='Create Seating Arrangements'>
 </div>
 {% endblock %}

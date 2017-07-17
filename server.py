@@ -313,8 +313,19 @@ def update_relationship(attendee_id, event_id):
                     attendee_id=attendee_id,
                     event_id=event_id))
 
-@app.route('/create-tables/', methods=['POST'])
-def create_tables():
+@app.route('/event=<int:event_id>/new-table/', methods=['GET'])
+def new_table(event_id):
+    table = None
+    event_id = event_id
+    seated_at_table = None
+
+    return render_template('table-info.html',
+                            event_id=event_id,
+                            seated_at_table=seated_at_table,
+                            table=table)
+
+@app.route('/event=<int:event_id>/create-tables/', methods=['POST'])
+def create_tables(event_id):
     '''create tables'''
     if is_not_logged_in():
         return redirect('/')
@@ -324,9 +335,7 @@ def create_tables():
 
     max_seats = int(request.form['max-seats'])
 
-    user_id = session.get("user_id")
-
-    event_id = db.session.query(Event.event_id).filter(Event.user_id == user_id).first()
+    event_id = event_id
 
     # add the table to the database
     table = Table(event_id=event_id,
@@ -336,7 +345,15 @@ def create_tables():
     db.session.add(table)
     db.session.commit()
 
-    return redirect('/event-info')
+    return redirect('/event-info/{}'.format(event_id))
+
+@app.route('/event=<int:event_id>/update-table/', methods=['POST'])
+def update_table(event_id):
+    pass
+
+@app.route('/event=<int:event_id>/delete-table/', methods=['POST'])
+def delete_table(event_id):
+    pass
 
 @app.route('/table-info/<int:table_id>')
 def table_detail(table_id):

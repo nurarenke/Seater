@@ -49,9 +49,14 @@
     <div>You do not have any tables yet... </div>
   {% endif %}
 </div>
+<!--Create a table button-->
 <div>
-<h2>Table Assignments</h2>
-<a href="/event={{ event.event_id }}/table-assignments/"><button type="button">View Table Assignments</button></a>
+  <a href="/event={{ event.event_id }}/new-table/"><button type="button">Create Table</button></a>
+</div>
+<!--View table assignments button-->
+<div>
+  <h2>Table Assignments</h2>
+  <a href="/event={{ event.event_id }}/table-assignments/"><button type="button">View Table Assignments</button></a>
 </div>
 
 {% endblock %}

@@ -197,51 +197,57 @@ def new_attendee(event_id):
                             attendee=attendee,
                             event_id=event_id)
 
-@app.route('/<int:event_id>/update-attendee/<int:attendee_id>', methods=['POST'])
-def delete_or_update_attendee(event_id, attendee_id):
+@app.route('/<int:event_id>/delete-attendee/<int:attendee_id>', methods=['POST'])
+def delete_attendee(event_id, attendee_id):
 
-    if request.form['submit'] == 'Delete':
-        delete_attendee = Attendee.query.filter_by(attendee_id = attendee_id).first()
+    delete_attendee = Attendee.query.filter_by(attendee_id = attendee_id).first()
 
-        flash('{} {} has been removed'.format(delete_attendee.first_name,
+    flash('{} {} has been removed'.format(delete_attendee.first_name,
                                         delete_attendee.last_name))
-        db.session.delete(delete_attendee)
-        db.session.commit()
+    db.session.delete(delete_attendee)
+    db.session.commit()
 
-        return redirect('/event-info/<int:event_id>')
+    return redirect('/event-info/<int:event_id>',
+                        attendee_id=attendee_id,
+                        event_id=event_id)
 
-    elif request.form['submit'] == 'Update':
-        first_name = request.form.get('first_name') 
-        last_name = request.form.get('last_name') 
-        email = request.form.get('email')
-        street = request.form.get('street') 
-        city = request.form.get('city')
-        state = request.form.get('state') 
-        zipcode = request.form.get('zipcode') 
-        meal_request = request.form.get('meal_request') 
-        note = request.form.get('note')
-        is_vip = request.form.get('vip') == 'True'
+@app.route('/<int:event_id>/update-attendee/<int:attendee_id>', methods=['POST'])
+def update_attendee(event_id, attendee_id):
 
-        updated_attendee = db.session.query(Attendee).filter(
-            Attendee.attendee_id==attendee_id).first()
+    first_name = request.form.get('first_name') 
+    last_name = request.form.get('last_name') 
+    email = request.form.get('email')
+    street = request.form.get('street') 
+    city = request.form.get('city')
+    state = request.form.get('state') 
+    zipcode = request.form.get('zipcode') 
+    meal_request = request.form.get('meal_request') 
+    note = request.form.get('note')
+    is_vip = request.form.get('vip') == 'True'
 
-        attendee.first_name = first_name
-        attendee.last_name = last_name
-        attendee.email = email
-        attendee.street = street
-        attendee.city = city
-        attendee.state = state
-        attendee.zipcode = zipcode
-        attendee.meal_request = meal_request
-        attendee.note = note
-        attendee.is_vip = is_vip
+    updated_attendee = db.session.query(Attendee).filter(
+        Attendee.attendee_id==attendee_id).first()
 
-        db.session.add(updated_attendee)
-        db.session.commit()
-        
+    attendee.first_name = first_name
+    attendee.last_name = last_name
+    attendee.email = email
+    attendee.street = street
+    attendee.city = city
+    attendee.state = state
+    attendee.zipcode = zipcode
+    attendee.meal_request = meal_request
+    attendee.note = note
+    attendee.is_vip = is_vip
+
+    db.session.add(updated_attendee)
+    db.session.commit()
+    
+    return redirect('/attendee/<int:event_id>/<int:attendee_id>',
+                    event_id=event_id,
+                    attendee_id=attendee_id)
 
 @app.route('/attendee/<int:event_id>/<int:attendee_id>')
-def display_attendee(attendee_id, event_id):
+def display_attendee(event_id, attendee_id):
     '''Show info about user and relationships.'''
     if is_not_logged_in():
         return redirect('/')
@@ -271,7 +277,8 @@ def display_attendee(attendee_id, event_id):
 
     return render_template("attendee.html", 
                             attendee=attendee, 
-                            attendees=attendees, 
+                            attendees=attendees,
+                            event_id=event_id, 
                             relationships_with_attendee=relationships_with_attendee)
 
 @app.route('/attendee/<int:attendee_id>', methods=['POST'])

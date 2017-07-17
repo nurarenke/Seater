@@ -103,10 +103,13 @@
     </div>
     <div class="form-group">
       <input id='save-btn' type='submit' name='submit' value='Save'>
-      <input id='delete-btn' type='submit' name='submit' value='Delete'>
     </div>
+  </form> 
+   <form class="form-group" action='/{{event_id}}/delete-attendee/{{attendee.attendee_id}}'}} method='POST'>
+      <input id='delete-btn' type='submit' name='submit' value='Delete'>
   </form>
 </div>
+
 
   <!--table assignment-->
   <div class=attendee-info>

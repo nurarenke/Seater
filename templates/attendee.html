@@ -123,7 +123,7 @@
 <!--create relationships-->
 <div>
   <h2>Create Relationships</h2>
-  <form action='/attendee/{{ attendee.attendee_id }}' method='POST'>
+  <form action='/attendee/{{ attendee.attendee_id }}/{{ event_id }}' method='POST'>
 
     <label>Select an Attendee</label>
     <select name='secondary-attendee'>

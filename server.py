@@ -1,4 +1,4 @@
-"""Movie Ratings."""
+"""Seater."""
 
 from jinja2 import StrictUndefined
 
@@ -202,14 +202,20 @@ def delete_attendee(event_id, attendee_id):
 
     delete_attendee = Attendee.query.filter_by(attendee_id = attendee_id).first()
 
+    relationships = db.session.query(SeatingRelationship).filter(
+            (SeatingRelationship.primary_attendee == attendee_id) | (
+                SeatingRelationship.secondary_attendee == attendee_id)).all()
+
+    for relationship in relationships:
+        db.session.delete(relationship)
+
     flash('{} {} has been removed'.format(delete_attendee.first_name,
                                         delete_attendee.last_name))
+    
     db.session.delete(delete_attendee)
     db.session.commit()
 
-    return redirect('/event-info/<int:event_id>',
-                        attendee_id=attendee_id,
-                        event_id=event_id)
+    return redirect('/event-info/{}'.format(event_id))
 
 @app.route('/<int:event_id>/update-attendee/<int:attendee_id>', methods=['POST'])
 def update_attendee(event_id, attendee_id):
@@ -252,6 +258,7 @@ def display_attendee(event_id, attendee_id):
     if is_not_logged_in():
         return redirect('/')
 
+    event_id = event_id
     # store the attendee_id from the page
     attendee = Attendee.query.get(attendee_id)
 
@@ -281,11 +288,13 @@ def display_attendee(event_id, attendee_id):
                             event_id=event_id, 
                             relationships_with_attendee=relationships_with_attendee)
 
-@app.route('/attendee/<int:attendee_id>', methods=['POST'])
-def update_relationship(attendee_id):
+@app.route('/attendee/<int:attendee_id>/<int:event_id>', methods=['POST'])
+def update_relationship(attendee_id, event_id):
     '''update relationship of the user in the database'''
     if is_not_logged_in():
         return redirect('/')
+
+    event_id = event_id
 
     attendee = Attendee.query.get(attendee_id)
 
@@ -302,7 +311,9 @@ def update_relationship(attendee_id):
     db.session.add(relationship)
     db.session.commit()
 
-    return redirect('/attendee/{}'.format(attendee.attendee_id))
+    return redirect('/attendee/{}/{}'.format(event_id, attendee.attendee_id,
+                    attendee_id=attendee_id,
+                    event_id=event_id))
 
 @app.route('/create-tables/', methods=['POST'])
 def create_tables():

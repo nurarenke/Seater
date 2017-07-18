@@ -4,6 +4,7 @@ from jinja2 import StrictUndefined
 
 from flask import Flask, render_template, request, flash, redirect, session, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
+from flask_bcrypt import Bcrypt
 
 from model import connect_to_db, db, User, Attendee, Event, Table, SeatingRelationship
 
@@ -32,19 +33,24 @@ def register_process():
     """Process registration."""
 
     # Get form variables
-    email = request.form['email']
-    password = request.form['password']
-    name = request.form['name']
+    email = request.form.get('email')
+    password = request.form.get('password').dec
+    name = request.form.get('name')
 
     # Check to see if the user is already registered
     if db.session.query(User).filter(User.email == email).all():
         flash('You are already registered with that email')
         return redirect('/')
 
+    # Create a hash of the user's password
+    pw_hash = bcrypt.generate_password_hash(password)
+
     # If it's a new email, add the user to the database
-    new_user = User(email=email, password=password, name=name)
+    new_user = User(email=email, password=pw_hash, name=name)
     db.session.add(new_user)
     db.session.commit()
+
+    # Save the user id in a session
     session["user_id"] = new_user.user_id
 
     flash("Welcome {}".format(name))
@@ -56,18 +62,19 @@ def login_process():
     '''Process login'''
 
     # Get form variables
-    email = request.form["email"]
-    password = request.form["password"]
+    email = request.form.get("email")
+    password = request.form.get("password")
 
     user = User.query.filter_by(email=email).first()
 
     if not user:
         flash("No such user")
-        return redirect("/login")
+        return redirect("/")
 
-    if user.password != password:
+    if not bcrypt.check_password_hash(user.password, password):
+
         flash("Incorrect password")
-        return redirect("/login")
+        return redirect("/")
 
     session["user_id"] = user.user_id
 
@@ -129,6 +136,13 @@ def add_event():
 
     return redirect('/event-info/{}'.format(new_event.event_id))
 
+@app.route('/event=<int:event_id>/update-event', methods=['POST'])
+def update_event(event_id):
+
+    event = Event.query.filter_by(event_id=event_id).first()
+
+    return render_template('edit_event.html',
+                            event=event)
 @app.route('/event-info/<int:event_id>')
 def display_attendee_list(event_id):
     '''displays a list of attendees and tables for a particular event'''
@@ -471,43 +485,6 @@ def is_not_logged_in():
         return True
     return False
  
-# @app.route('/assignment-info.json')
-# def get_assignment_info():
-#     '''Get delivery info'''
-
-#     # query for assigned attendees
-# assigned_attendees = db.session.query(Attendee.table_id, Attendee.first_name,
-#     Attendee.last_name, Attendee.attendee_id).filter(Attendee.table_id != None).join(
-#     Table).order_by(Attendee.table_id).all()
-
-# # refractor sqlalchemy objects into json format
-
-# table_assignments = []
-
-# # for table_id, first_name, last_name, attendee_id in attendees_info:
-# #     if table_id in table_assignments:
-# #         table_assignments[table_id]['first_name'].append(first_name)
-# #         table_assignments[table_id]['last_name'].append(last_name)
-# #         table_assignments[table_id]['attendee_id'].append(attendee_id)
-# #     else:
-#         table_assignments.append({'table_id':table_id, 'attendees':[] })
-
-# #pseudo code:
-# # data = []
-
-# # for table in tables:
-# #     table_data = {'table_id': table.id, 'guests': []}
-
-# #     for guest in table.guests:
-# #         table_data['guests'].append({'guest_id': guest.id, 'name': guest.name})
-
-
-#     data.append(table_data)
-
-# return jsonify({'results': data})
-
-
-#     return jsonify(table_assignments)
 
 @app.route('/dynamic-table-display')
 def display_tables_dynamically():
@@ -529,5 +506,7 @@ if __name__ == "__main__":
 
     # Use the DebugToolbar
     DebugToolbarExtension(app)
+
+    bcrypt = Bcrypt(app)
 
     app.run(host="0.0.0.0")

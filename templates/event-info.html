@@ -11,8 +11,11 @@
     <div>Time: {{ event.time }}</div>
   </div>
 </div>
+<!--Edit event button-->
+<div>
+  <a href="/event={{ event.event_id }}/update-event"><button type="button">Edit Event</button></a>
+</div>
 <!--List of Attendees-->
-
 <div>
     <h2>Attendees</h2>
     {% if attendees %}

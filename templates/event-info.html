@@ -39,8 +39,8 @@
   {% if tables %}
     <ul>
       {% for table in tables %}
-      <li><a href="/table-info/{{ table.table_id }}">
-        Table Name: {{ table.table_name }}, Max-Seats: {{ table.max_seats }}
+      <li><a href="/event={{ event.event_id }}/table-info/{{ table.table_id }}">
+        Table Name: {{ table.table_name}}, Max-Seats: {{ table.max_seats }}
         </a>
       </li>
       {% endfor %}

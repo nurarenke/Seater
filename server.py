@@ -347,19 +347,42 @@ def create_tables(event_id):
 
     return redirect('/event-info/{}'.format(event_id))
 
-@app.route('/event=<int:event_id>/update-table/', methods=['POST'])
-def update_table(event_id):
-    pass
+@app.route('/event=<int:event_id>/update-table/table=<int:table_id>', methods=['POST'])
+def update_table(event_id, table_id):
+    
+    if is_not_logged_in():
+        return redirect('/')
+
+    # retrieve values from the form
+    table_name = request.form['table-name']
+
+    max_seats = int(request.form['max-seats'])
+
+    event_id = event_id
+
+    updated_table = Table.query.filter_by(table_id=table_id).first()
+
+    # update the table in the database
+    updated_table.event_id=event_id
+    updated_table.table_name=table_name
+    updated_table.max_seats=max_seats
+
+    db.session.add(updated_table)
+    db.session.commit()
+
+    return redirect('/event={}/table-info/{}'.format(event_id, table_id))
 
 @app.route('/event=<int:event_id>/delete-table/', methods=['POST'])
 def delete_table(event_id):
     pass
 
-@app.route('/table-info/<int:table_id>')
-def table_detail(table_id):
+@app.route('/event=<int:event_id>/table-info/<int:table_id>')
+def table_detail(event_id, table_id):
     '''Show info about a table.'''
     if is_not_logged_in():
         return redirect('/')
+
+    event_id = event_id
 
     table = Table.query.get(table_id)
 
@@ -367,7 +390,8 @@ def table_detail(table_id):
 
     return render_template('/table-info.html',
                             table=table,
-                            seated_at_table=seated_at_table)
+                            seated_at_table=seated_at_table,
+                            event_id=event_id)
 
 @app.route('/event=<int:event_id>/table-assignments/', methods=['POST'])
 def assign_tables():

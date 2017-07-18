@@ -5,14 +5,20 @@
 <!--Display seating arrangements-->
 <h2>Table Assignments</h2>
 <ul>
-{%if assigned_attendees %}
-{% for attendee in assigned_attendees %}
-    <li>{{ attendee.first_name }}, {{ attendee.last_name }}, {{ attendee.table_id }}
-    </li>
-{% endfor %}
-</ul>
+{% if assigned_attendees %}
+    {% for table in assigned_tables %}
+        <h3>{{ table.table_name }} - {{ table.max_seats}} Seats</h3>
+        <ul> 
+        {% for attendee in assigned_attendees %}
+            {% if attendee.table_id == table.table_id %}
+                <li>{{ attendee.first_name }}, {{ attendee.last_name }}</li>
+            {% endif %}
+        {% endfor %}
+        </ul>
+    {% endfor %}
+    </ul>
 {% else %}
-<p>No assignments yet.</p>
+    <p>No Assignments</p>
 {% endif %}
 </div>
 <!--Create Assignments Button-->

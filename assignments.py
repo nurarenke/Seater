@@ -1,20 +1,8 @@
 from model import connect_to_db, db, User, Attendee, Event, Table, SeatingRelationship
 
 # db = SQLAlchemy()
-def table_assignments():
-    # query for all of attendees
-    # TODO: filter by event_id
-    attendees = []
-    for attendee in db.session.query(Attendee).all():
-        attendees.append(attendee.attendee_id)
-    
-    # TODO: filter by event_id
-    # query for all table_ids
-    tables = {}
-    total_seats = 0;
-    for table in db.session.query(Table).all():
-        tables[table.table_id] = table.max_seats
-        total_seats += table.max_seats
+def table_assignments(event_id, attendees, tables, total_seats):
+    ''' Create table assignments '''
 
     # dont even try to solve this if there isnt enough seats
     if (total_seats < len(attendees)):

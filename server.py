@@ -127,7 +127,7 @@ def add_event():
     db.session.add(new_event)
     db.session.commit()
 
-    return redirect('/events')
+    return redirect('/event-info/{}'.format(new_event.event_id))
 
 @app.route('/event-info/<int:event_id>')
 def display_attendee_list(event_id):
@@ -190,6 +190,9 @@ def create_attendee(event_id):
 @app.route('/attendee/<int:event_id>/new-attendee')
 def new_attendee(event_id):
     '''Shows an empty attendee info page for filling out to make a new attendee.'''
+    if is_not_logged_in():
+        return redirect('/')
+
     attendee = None
     event_id = event_id
 
@@ -199,6 +202,8 @@ def new_attendee(event_id):
 
 @app.route('/<int:event_id>/delete-attendee/<int:attendee_id>', methods=['POST'])
 def delete_attendee(event_id, attendee_id):
+    if is_not_logged_in():
+        return redirect('/')
 
     delete_attendee = Attendee.query.filter_by(attendee_id = attendee_id).first()
 
@@ -219,6 +224,8 @@ def delete_attendee(event_id, attendee_id):
 
 @app.route('/<int:event_id>/update-attendee/<int:attendee_id>', methods=['POST'])
 def update_attendee(event_id, attendee_id):
+    if is_not_logged_in():
+        return redirect('/')
 
     first_name = request.form.get('first_name') 
     last_name = request.form.get('last_name') 
@@ -407,17 +414,26 @@ def table_detail(event_id, table_id):
                             event_id=event_id)
 
 @app.route('/event=<int:event_id>/table-assignments/', methods=['POST'])
-def assign_tables():
+def assign_tables(event_id):
     '''assign tables'''
     if is_not_logged_in():
         return redirect('/')
 
-    assignments = table_assignments()
-    # check if assignments None
+    attendee_ids = []
+    for attendee in db.session.query(Attendee).filter(Attendee.event_id == event_id).all():
+        attendee_ids.append(attendee.attendee_id)
 
-    # query for how many tables the user created
-    user_id = session.get("user_id")
-    event_id = db.session.query(Event.event_id).filter(Event.user_id == user_id).first()
+    table_ids = {}
+    total_seats = 0;
+    for table in db.session.query(Table).filter(Table.event_id == event_id).all():
+        table_ids[table.table_id] = table.max_seats
+        total_seats += table.max_seats
+
+    assignments = table_assignments(event_id, attendee_ids, table_ids, total_seats)
+    # check if assignments None
+    if not assignments:
+        flash("Could not build a valid seating assignment.")
+        return redirect('/event={}/table-assignments/'.format(event_id))
    
     # add attendees to the appropiate table in the database
 
@@ -429,7 +445,7 @@ def assign_tables():
             db.session.add(attendee)
         
     db.session.commit()
-    return render_template('/table-assignments/{}'.format())
+    return redirect('/event={}/table-assignments/'.format(event_id))
 
 @app.route('/event=<int:event_id>/table-assignments/', methods=['GET'])
 def display_tables(event_id):
@@ -442,8 +458,11 @@ def display_tables(event_id):
     assigned_attendees = db.session.query(Attendee).filter(Attendee.event_id == event_id, Attendee.table_id != None).join(
         Table).order_by(Table.table_name).all()
 
+    assigned_tables = db.session.query(Table).filter(Table.event_id == event_id).order_by(Table.table_name).all()
+
     return render_template('/table-assignments.html',
                             assigned_attendees=assigned_attendees,
+                            assigned_tables=assigned_tables,
                             event_id=event_id)
 
 def is_not_logged_in():

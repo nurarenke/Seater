@@ -372,9 +372,22 @@ def update_table(event_id, table_id):
 
     return redirect('/event={}/table-info/{}'.format(event_id, table_id))
 
-@app.route('/event=<int:event_id>/delete-table/', methods=['POST'])
-def delete_table(event_id):
-    pass
+@app.route('/event=<int:event_id>/delete-table/table=<int:table_id>', methods=['POST'])
+def delete_table(event_id, table_id):
+    '''delete table'''
+
+    table_to_delete = Table.query.filter_by(table_id=table_id).first()
+
+    table_assignments_to_delete = Attendee.query.filter_by(table_id=table_id).all()
+
+    # replace table assignments with none for each attendee at that table
+    for attendee in table_assignments_to_delete:
+        attendee.table_id = None
+
+    db.session.delete(table_to_delete)
+    db.session.commit()
+
+    return redirect('/event-info/{}'.format(event_id))
 
 @app.route('/event=<int:event_id>/table-info/<int:table_id>')
 def table_detail(event_id, table_id):

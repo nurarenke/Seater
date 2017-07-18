@@ -8,19 +8,23 @@
   <h2>Edit Table</h2>
 
   <form class="form-horizontal" action='/event={{ event_id }}/update-table/table={{ table.table_id }}' method='POST'>
-  <div class="form-group"> 
-    <label>Table Name</label>
-    <input type='text' name='table-name' value='{{ table.table_name }}'>
-  </div>
-  <div class="form-group"> 
-    <label>Number of Seats</label>
-    <input type='number' name='max-seats' value='{{ table.max_seats }}'>
-  </div>
-  <div class="form-group"> 
-    <input type='submit' name='btn' value='Save'>
-  </div>
+    <div class="form-group"> 
+      <label>Table Name</label>
+      <input type='text' name='table-name' value='{{ table.table_name }}'>
+    </div>
+    <div class="form-group"> 
+      <label>Number of Seats</label>
+      <input type='number' name='max-seats' value='{{ table.max_seats }}'>
+    </div>
+    <div class="form-group"> 
+      <input type='submit' name='btn' value='Save'>
+    </div>
   </form>
-
+  <form class="form-horizontal" action='/event={{ event_id }}/delete-table/table={{ table.table_id }}' method='POST'>
+    <div class="form-group"> 
+      <input type='submit' name='btn' value='Delete'>
+    </div>
+  </form>
 </div>
 
 <div>
@@ -43,17 +47,17 @@
   <h2>Create your Tables:</h2>
 
   <form class="form-horizontal" action='/event={{ event_id }}/create-tables/' method='POST'>
-  <div class="form-group"> 
-    <label>Table Name</label>
-    <input type='text' name='table-name'><br><br>
-  </div>
-  <div class="form-group">
-    <label>Number of Seats</label>
-    <input type='number' name='max-seats'>
-  </div>
-  <div class="form-group">
-    <input type='submit' name='btn' value='Submit'>
-  </div>
+    <div class="form-group"> 
+      <label>Table Name</label>
+      <input type='text' name='table-name'><br><br>
+    </div>
+    <div class="form-group">
+      <label>Number of Seats</label>
+      <input type='number' name='max-seats'>
+    </div>
+    <div class="form-group">
+      <input type='submit' name='btn' value='Submit'>
+    </div>
   </form>
 
 </div>

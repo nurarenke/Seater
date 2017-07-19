@@ -356,26 +356,26 @@ def display_attendee(event_id, attendee_id):
                             event_id=event_id, 
                             relationships_with_attendee=relationships_with_attendee)
 
-@app.route('/event=<int:event_id>/delete-attendee/<int:attendee_id>/<int:secondary_attendee_id>/', methods=['POST'])
+@app.route('/event=<int:event_id>/delete-attendee/<int:attendee_id>/<int:secondary_attendee_id>', methods=['POST'])
 def delete_relationship(attendee_id, secondary_attendee_id, event_id):
 
+    event_id = event_id
     current_attendee_relationship = db.session.query(SeatingRelationship).filter(
         (
             (SeatingRelationship.primary_attendee == attendee_id) &
-            (SeatingRelationship.secondary_attendee == secondary_attendee)
+            (SeatingRelationship.secondary_attendee == secondary_attendee_id)
         ) | 
         (
-            (SeatingRelationship.primary_attendee == secondary_attendee) &
+            (SeatingRelationship.primary_attendee == secondary_attendee_id) &
             (SeatingRelationship.secondary_attendee == attendee_id)
         )
     ).first()
 
-    flash('Relationship with {} deleted'.format(secondary_attendee))
+    flash('Relationship deleted')
     db.session.delete(current_attendee_relationship)
     db.session.commit()
 
-    return redirect('/attendee/{}/{})'.format(event_id, attendee_id),
-                    event_id=event_id)
+    return redirect('/attendee/{}/{}'.format(event_id, attendee_id))
 
 @app.route('/attendee/<int:attendee_id>/<int:event_id>', methods=['POST'])
 def update_relationship(attendee_id, event_id):

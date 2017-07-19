@@ -136,15 +136,64 @@ def add_event():
 
     return redirect('/event-info/{}'.format(new_event.event_id))
 
-@app.route('/event=<int:event_id>/update-event', methods=['POST'])
+@app.route('/event=<int:event_id>/update-event', methods=['GET','POST'])
 def update_event(event_id):
 
-    event = Event.query.filter_by(event_id=event_id).first()
+    if request.method == 'GET':
+        event = Event.query.filter_by(event_id=event_id).first()
+        return render_template('edit-event.html',
+                                event=event)
 
-    return render_template('edit_event.html',
-                            event=event)
+    elif request.method == 'POST':
+
+        # get form values
+        event_name = request.form.get('event_name')
+        event_description = request.form.get('event_description')
+        location = request.form.get('location')
+        time = request.form.get('time')
+
+        updated_event = Event.query.filter_by(event_id=event_id).first()
+
+        updated_event.event_name = event_name
+        updated_event.event_description = event_description
+        updated_event.location = location
+        updated_event.time = time
+
+        db.session.add(updated_event)
+        db.session.commit()
+
+        return redirect('/event-info/{}'.format(event_id))
+
+@app.route('/event=<int:event_id>/delete-event', methods=['POST'])
+def delete_event(event_id):
+
+    deleted_event = Event.query.filter_by(event_id=event_id).first()
+    db.session.delete(deleted_event)
+
+    deleted_attendees = Attendee.query.filter_by(event_id=event_id).all()
+    for attendee in deleted_attendees:
+        relationships = db.session.query(SeatingRelationship).filter(
+            (SeatingRelationship.primary_attendee == attendee.attendee_id) | (
+                SeatingRelationship.secondary_attendee == attendee.attendee_id)).all()
+
+        for relationship in relationships:
+            db.session.delete(relationship)
+
+        db.session.delete(attendee)
+
+
+    deleted_tables = Table.query.filter_by(event_id=event_id).all()
+    for table in deleted_tables:
+        db.session.delete(table)
+
+    flash('{} has been removed'.format(deleted_event.event_name))
+    db.session.commit()
+
+    return redirect('/events')
+
+    
 @app.route('/event-info/<int:event_id>')
-def display_attendee_list(event_id):
+def display_event_info(event_id):
     '''displays a list of attendees and tables for a particular event'''
     if is_not_logged_in():
         return redirect('/')
@@ -306,6 +355,27 @@ def display_attendee(event_id, attendee_id):
                             attendees=attendees,
                             event_id=event_id, 
                             relationships_with_attendee=relationships_with_attendee)
+
+@app.route('/event=<int:event_id>/delete-attendee/<int:attendee_id>/<int:secondary_attendee_id>/', methods=['POST'])
+def delete_relationship(attendee_id, secondary_attendee_id, event_id):
+
+    current_attendee_relationship = db.session.query(SeatingRelationship).filter(
+        (
+            (SeatingRelationship.primary_attendee == attendee_id) &
+            (SeatingRelationship.secondary_attendee == secondary_attendee)
+        ) | 
+        (
+            (SeatingRelationship.primary_attendee == secondary_attendee) &
+            (SeatingRelationship.secondary_attendee == attendee_id)
+        )
+    ).first()
+
+    flash('Relationship with {} deleted'.format(secondary_attendee))
+    db.session.delete(current_attendee_relationship)
+    db.session.commit()
+
+    return redirect('/attendee/{}/{})'.format(event_id, attendee_id),
+                    event_id=event_id)
 
 @app.route('/attendee/<int:attendee_id>/<int:event_id>', methods=['POST'])
 def update_relationship(attendee_id, event_id):

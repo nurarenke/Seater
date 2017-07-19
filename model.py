@@ -119,6 +119,25 @@ class SeatingRelationship(db.Model):
 
 ##############################################################################
 # Helper functions
+def example_data():
+    ''' Create sample data to test '''
+
+    # In case this is run more than once, empty out existing data
+    Event.query.delete()
+    Table.query.delete()
+    Attendee.query.delete()
+    SeatingRelationship.delete()
+
+    # Add sample data
+    e = Event(event_name = 'Test Event', event_description='Testing',
+     location='Test Location', time = 'Test time' )
+    t = Table(table_name='Test Table', max_seats=8)
+    john = Attendee(first_name='John', last_name="Smith")
+    pocohontas = Attendee(first_name='Pocohontas', last_name="Chiefess")
+
+    db.session.add_all([e, t, john, pocohontas])
+    db.commit()
+
 
 def connect_to_db(app):
     """Connect the database to our Flask app."""

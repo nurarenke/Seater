@@ -167,9 +167,7 @@ def update_event(event_id):
 @app.route('/event=<int:event_id>/delete-event', methods=['POST'])
 def delete_event(event_id):
 
-    deleted_event = Event.query.filter_by(event_id=event_id).first()
-    db.session.delete(deleted_event)
-
+    
     deleted_attendees = Attendee.query.filter_by(event_id=event_id).all()
     for attendee in deleted_attendees:
         relationships = db.session.query(SeatingRelationship).filter(
@@ -185,6 +183,9 @@ def delete_event(event_id):
     deleted_tables = Table.query.filter_by(event_id=event_id).all()
     for table in deleted_tables:
         db.session.delete(table)
+
+    deleted_event = Event.query.filter_by(event_id=event_id).first()
+    db.session.delete(deleted_event)
 
     flash('{} has been removed'.format(deleted_event.event_name))
     db.session.commit()
@@ -341,20 +342,29 @@ def display_attendee(event_id, attendee_id):
 
     # find the other relationship to the attendee
     relationships_with_attendee = []
+    relationships_attendee_ids = []
     for r in relationships:
         relationship_attendee = None
         if r.primary_attendee == attendee_id:
             relationship_attendee = Attendee.query.get(r.secondary_attendee)
         else:
             relationship_attendee = Attendee.query.get(r.primary_attendee)
-
+        
+        relationships_attendee_ids.append(relationship_attendee.attendee_id)
         relationships_with_attendee.append((relationship_attendee, r.relationship_code)) 
+
+    # look for attendees with no relationships
+    attendees_not_yet_related_to = []
+    for a in attendees:
+            if a.attendee_id not in relationships_attendee_ids and a.attendee_id != attendee_id:
+                attendees_not_yet_related_to.append(a)
 
     return render_template("attendee.html", 
                             attendee=attendee, 
                             attendees=attendees,
                             event_id=event_id, 
-                            relationships_with_attendee=relationships_with_attendee)
+                            relationships_with_attendee=relationships_with_attendee,
+                            attendees_not_yet_related_to=attendees_not_yet_related_to)
 
 @app.route('/event=<int:event_id>/delete-attendee/<int:attendee_id>/<int:secondary_attendee_id>', methods=['POST'])
 def delete_relationship(attendee_id, secondary_attendee_id, event_id):

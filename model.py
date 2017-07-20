@@ -123,27 +123,37 @@ def example_data():
     ''' Create sample data to test '''
 
     # In case this is run more than once, empty out existing data
+    User.query.delete()
     Event.query.delete()
     Table.query.delete()
     Attendee.query.delete()
-    SeatingRelationship.delete()
 
     # Add sample data
+    u = User(email='test@testemail.com', password='password', name='foo')
+    db.session.add(u)
+    db.session.commit()
+
     e = Event(event_name = 'Test Event', event_description='Testing',
-     location='Test Location', time = 'Test time' )
-    t = Table(table_name='Test Table', max_seats=8)
-    john = Attendee(first_name='John', last_name="Smith")
-    pocohontas = Attendee(first_name='Pocohontas', last_name="Chiefess")
+     location='Test Location', time = 'Test time', user_id=1)
+    db.session.add(e)
+    db.session.commit()
+    t = Table(table_name='Test Table', max_seats=8, event_id=1)
+    john = Attendee(first_name='John', last_name="Smith", event_id=1)
+    pocohontas = Attendee(first_name='Pocohontas', last_name="Chiefess", event_id=1)
 
-    db.session.add_all([e, t, john, pocohontas])
-    db.commit()
+    db.session.add_all([t, john, pocohontas])
+    db.session.commit()
+
+    # import pdb; pdb.set_trace()
+    
+    
 
 
-def connect_to_db(app):
+def connect_to_db(app, database='postgresql:///seater'):
     """Connect the database to our Flask app."""
 
     # Configure to use our PstgreSQL database
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///seater'
+    app.config['SQLALCHEMY_DATABASE_URI'] = database
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SQLALCHEMY_ECHO'] = True
     db.app = app

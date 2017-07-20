@@ -136,33 +136,33 @@ def add_event():
 
     return redirect('/event-info/{}'.format(new_event.event_id))
 
-@app.route('/event=<int:event_id>/update-event', methods=['GET','POST'])
+@app.route('/event=<int:event_id>/update-event', methods=['GET'])
+def display_edit_event(event_id):
+
+    event = Event.query.filter_by(event_id=event_id).first()
+    return render_template('edit-event.html',
+                            event=event)
+
+@app.route('/event=<int:event_id>/update-event', methods=['POST'])
 def update_event(event_id):
 
-    if request.method == 'GET':
-        event = Event.query.filter_by(event_id=event_id).first()
-        return render_template('edit-event.html',
-                                event=event)
+    # get form values
+    event_name = request.form.get('event_name')
+    event_description = request.form.get('event_description')
+    location = request.form.get('location')
+    time = request.form.get('time')
 
-    elif request.method == 'POST':
+    updated_event = Event.query.filter_by(event_id=event_id).first()
 
-        # get form values
-        event_name = request.form.get('event_name')
-        event_description = request.form.get('event_description')
-        location = request.form.get('location')
-        time = request.form.get('time')
+    updated_event.event_name = event_name
+    updated_event.event_description = event_description
+    updated_event.location = location
+    updated_event.time = time
 
-        updated_event = Event.query.filter_by(event_id=event_id).first()
+    db.session.add(updated_event)
+    db.session.commit()
 
-        updated_event.event_name = event_name
-        updated_event.event_description = event_description
-        updated_event.location = location
-        updated_event.time = time
-
-        db.session.add(updated_event)
-        db.session.commit()
-
-        return redirect('/event-info/{}'.format(event_id))
+    return redirect('/event={}/event-info'.format(event_id))
 
 @app.route('/event=<int:event_id>/delete-event', methods=['POST'])
 def delete_event(event_id):
@@ -193,7 +193,7 @@ def delete_event(event_id):
     return redirect('/events')
 
     
-@app.route('/event-info/<int:event_id>')
+@app.route('/event=<int:event_id>/event-info/')
 def display_event_info(event_id):
     '''displays a list of attendees and tables for a particular event'''
     if is_not_logged_in():
@@ -284,7 +284,7 @@ def delete_attendee(event_id, attendee_id):
     db.session.delete(delete_attendee)
     db.session.commit()
 
-    return redirect('/event-info/{}'.format(event_id))
+    return redirect('/event={}/event-info'.format(event_id))
 
 @app.route('/<int:event_id>/update-attendee/<int:attendee_id>', methods=['POST'])
 def update_attendee(event_id, attendee_id):
@@ -446,7 +446,7 @@ def create_tables(event_id):
     db.session.add(table)
     db.session.commit()
 
-    return redirect('/event-info/{}'.format(event_id))
+    return redirect('event={}/event-info'.format(event_id))
 
 @app.route('/event=<int:event_id>/update-table/table=<int:table_id>', methods=['POST'])
 def update_table(event_id, table_id):
@@ -488,7 +488,7 @@ def delete_table(event_id, table_id):
     db.session.delete(table_to_delete)
     db.session.commit()
 
-    return redirect('/event-info/{}'.format(event_id))
+    return redirect('event={}/event-info'.format(event_id))
 
 @app.route('/event=<int:event_id>/table-info/<int:table_id>')
 def table_detail(event_id, table_id):

@@ -1,6 +1,6 @@
 import server
 import unittest
-# from model import connect_to_db, db, example_data
+from model import connect_to_db, db, example_data
 # import doctest
 
 
@@ -59,27 +59,51 @@ class HomepageServerRoutesLoggedInTestCase(unittest.TestCase):
 
 
 
-# class FlaskTestsDatabase(unittest.TestCasee):
-#     """Flask tests that use the database."""
+class FlaskTestsDatabase(unittest.TestCase):
+    """Flask tests that use the database."""
 
-#     def setUp(self):
-#         """Stuff to do before every test."""
+    def setUp(self):
+        """Stuff to do before every test."""
 
-#         # Connect to test database
-#         connect_to_db(app, "postgresql:///testdb")
+        # Get the Flask test client
+        self.client = server.app.test_client()
+        server.app.config['TESTING'] = True
+        server.app.config['SECRET_KEY'] = "Lava12#$!!"
 
-#         # Create tables and add sample data
-#         db.create_all()
-#         example_data()
+        # Connect to test database
+        connect_to_db(server.app, "postgresql:///testdb")
 
-#     def tearDown(self):
-#         """Do at end of every test."""
+        # Create tables and add sample data
+        db.create_all()
+        example_data()
 
-#         db.session.close()
-#         db.drop_all()
+        with self.client as c:
+            with c.session_transaction() as se:
+                se['user_id'] = 13
+                se['username'] = 'foo'
 
-#     def test_some_db_thing(self):
-#         """Some database test..."
+    def tearDown(self):
+        """Do at end of every test."""
+
+        db.session.close()
+        db.drop_all()
+
+        with self.client as c:
+            with c.session_transaction() as se:
+                se.pop('user_id')
+                se.pop('username')
+
+    def test_events_list(self):
+        """Test events page."""
+    
+        result = self.client.get("/events")
+        self.assertIn('Test Event', result.data)
+
+    # def test_attendee_list(self):
+    #     """Test attende page."""
+    
+    # result = self.client.get("/event=<int:event_id>/event-info/")
+    #     self.assertIn('Test Event', result.data)
 
 
 

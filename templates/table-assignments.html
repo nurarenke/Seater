@@ -23,8 +23,14 @@
 </div>
 <!--Create Assignments Button-->
 <div>
-<h2>Create your Seating Arrangements</h2>
-<form action='/event={{ event_id }}/table-assignments/' method="POST">
-<input type='submit' name='btn' value='Create Seating Arrangements'>
+    <h2>Create your Seating Arrangements</h2>
+    <form action='/event={{ event_id }}/table-assignments/' method="POST">
+    <input type='submit' name='btn' value='Create Seating Arrangements'>
+    </form>
+</div>
+<div><br>
+    <form action='/event={{ event_id }}/clear-table-assignments/' method="POST">
+    <input type='submit' name='btn' value='Clear Seating Arrangements'>
+    </form>
 </div>
 {% endblock %}

@@ -446,7 +446,7 @@ def create_tables(event_id):
     db.session.add(table)
     db.session.commit()
 
-    return redirect('event={}/event-info'.format(event_id))
+    return redirect('/event={}/event-info'.format(event_id))
 
 @app.route('/event=<int:event_id>/update-table/table=<int:table_id>', methods=['POST'])
 def update_table(event_id, table_id):
@@ -488,7 +488,7 @@ def delete_table(event_id, table_id):
     db.session.delete(table_to_delete)
     db.session.commit()
 
-    return redirect('event={}/event-info'.format(event_id))
+    return redirect('/event={}/event-info'.format(event_id))
 
 @app.route('/event=<int:event_id>/table-info/<int:table_id>')
 def table_detail(event_id, table_id):
@@ -558,6 +558,25 @@ def display_tables(event_id):
                             assigned_attendees=assigned_attendees,
                             assigned_tables=assigned_tables,
                             event_id=event_id)
+
+@app.route('/event=<int:event_id>/clear-table-assignments/', methods=['POST'])
+def clear_tables(event_id):
+    if is_not_logged_in():
+        return redirect('/')
+
+    event_id=event_id
+
+     # query for all of attendees who are assigned to a table
+    assigned_attendees = db.session.query(Attendee).filter(Attendee.event_id == event_id, Attendee.table_id != None).join(
+        Table).order_by(Table.table_name).all()
+
+    for a in assigned_attendees:
+        a.table_id = None
+        db.session.add(a)
+        db.session.commit()
+
+    return redirect(('/event={}/table-assignments/').format(event_id))
+
 
 def is_not_logged_in():
     if not session.get('user_id'):

@@ -128,8 +128,8 @@
 
     <label>Select an Attendee</label>
     <select name='secondary-attendee'>
-      {% for attendee in attendees_not_yet_related_to | sort(attribute='last_name') %}
-        <option value='{{ attendee.attendee_id }}'>{{ attendee.first_name }} {{ attendee.last_name }}</option>
+      {% for a in attendees_not_yet_related_to | sort(attribute='last_name') %}
+        <option value='{{ a.attendee_id }}'>{{ a.first_name }} {{ a.last_name }}</option>
       {% endfor %}
     </select>
 
@@ -149,7 +149,7 @@
   <ul>
       {% for secondary_attendee, relationship_code in relationships_with_attendee %}
       <li>
-        <a href='/attendee/{{ secondary_attendee.attendee_id }}'>
+        <a href='/attendee/{{ event_id }}/{{ secondary_attendee.attendee_id }}'>
         {{ secondary_attendee.last_name }}, {{ secondary_attendee.first_name }} - {{ relationship_code }} 
         </a>
         <form action='/event={{ event_id }}/delete-attendee/{{attendee.attendee_id}}/{{ secondary_attendee.attendee_id }}' method='POST'>

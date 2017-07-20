@@ -138,7 +138,7 @@ def get_table_id_to_attempt(tables, cluster_size, attempted_tables, must_not_att
 
     for table in sorted_tables:
 
-        # if there are enough seats at this table, skip it
+        # if there are not enough seats at this table, skip it
         if tables[table] - len(assignments.get(table, [])) < cluster_size:
             continue
 
@@ -177,7 +177,7 @@ def build_clusters(attendees, relationships):
                 break
 
             # if the musts share an attendee with this cluster, add the attendee
-            # testing it two lists share an item
+            # testing if two lists share an item
             # https://stackoverflow.com/questions/3170055/test-if-lists-share-any-items-in-python
             if not set(cluster).isdisjoint(must_attendees):
                 cluster.append(attendee_id)

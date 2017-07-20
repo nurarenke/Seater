@@ -1,6 +1,7 @@
 import server
 import unittest
-from model import connect_to_db, db, example_data
+from model import connect_to_db, db, example_data, User
+
 # import doctest
 
 
@@ -77,10 +78,12 @@ class FlaskTestsDatabase(unittest.TestCase):
         db.create_all()
         example_data()
 
+        test_user = User.query.filter_by(email = 'test@testemail.com').first()
+
         with self.client as c:
             with c.session_transaction() as se:
-                se['user_id'] = 13
-                se['username'] = 'foo'
+                se['user_id'] = test_user.user_id
+                se['name'] = 'foo'
 
     def tearDown(self):
         """Do at end of every test."""
@@ -91,7 +94,7 @@ class FlaskTestsDatabase(unittest.TestCase):
         with self.client as c:
             with c.session_transaction() as se:
                 se.pop('user_id')
-                se.pop('username')
+                se.pop('name')
 
     def test_events_list(self):
         """Test events page."""

@@ -123,28 +123,35 @@ def example_data():
     ''' Create sample data to test '''
 
     # In case this is run more than once, empty out existing data
-    User.query.delete()
-    Event.query.delete()
-    Table.query.delete()
     Attendee.query.delete()
+    Table.query.delete()
+    Event.query.delete()
+    User.query.delete()
+    SeatingRelationship.query.delete()
+    
+
+    
 
     # Add sample data
-    u = User(email='test@testemail.com', password='password', name='foo')
-    db.session.add(u)
+    test_user = User(email='test@testemail.com', password='password', name='foo')
+    db.session.add(test_user)
     db.session.commit()
-
+    # import pdb; pdb.set_trace()
     e = Event(event_name = 'Test Event', event_description='Testing',
-     location='Test Location', time = 'Test time', user_id=1)
+     location='Test Location', time = 'Test time', user_id=test_user.user_id)
     db.session.add(e)
     db.session.commit()
-    t = Table(table_name='Test Table', max_seats=8, event_id=1)
-    john = Attendee(first_name='John', last_name="Smith", event_id=1)
-    pocohontas = Attendee(first_name='Pocohontas', last_name="Chiefess", event_id=1)
+    t = Table(table_name='Test Table', max_seats=8, event_id=e.event_id)
+    john = Attendee(first_name='John', last_name="Smith", event_id=e.event_id)
+    pocohontas = Attendee(first_name='Pocohontas', last_name="Chiefess", event_id=e.event_id)
+    relationship = SeatingRelationship(primary_attendee= john.attendee_id,
+     secondary_attendee= pocohontas.attendee_id, relationship_code='must')
 
     db.session.add_all([t, john, pocohontas])
+    db.session.add(relationship)
     db.session.commit()
 
-    # import pdb; pdb.set_trace()
+    
     
     
 

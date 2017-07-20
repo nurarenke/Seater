@@ -136,7 +136,7 @@ def example_data():
     test_user = User(email='test@testemail.com', password='password', name='foo')
     db.session.add(test_user)
     db.session.commit()
-    # import pdb; pdb.set_trace()
+   
     e = Event(event_name = 'Test Event', event_description='Testing',
      location='Test Location', time = 'Test time', user_id=test_user.user_id)
     db.session.add(e)

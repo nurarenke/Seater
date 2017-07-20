@@ -1,6 +1,6 @@
 import server
 import unittest
-from model import connect_to_db, db, example_data, User
+from model import connect_to_db, db, example_data, User, Attendee, Event, Table, SeatingRelationship
 
 # import doctest
 
@@ -79,7 +79,10 @@ class FlaskTestsDatabase(unittest.TestCase):
         example_data()
 
         test_user = User.query.filter_by(email = 'test@testemail.com').first()
-
+        self.test_event = Event.query.filter_by(event_description='Testing').first()
+        self.pocohontas = Attendee.query.filter_by(first_name = 'pocohontas').first()
+        self.john = Attendee.query.filter_by(first_name = 'john').first()
+        
         with self.client as c:
             with c.session_transaction() as se:
                 se['user_id'] = test_user.user_id
@@ -102,12 +105,24 @@ class FlaskTestsDatabase(unittest.TestCase):
         result = self.client.get("/events")
         self.assertIn('Test Event', result.data)
 
-    # def test_attendee_list(self):
-    #     """Test attende page."""
+    def test_attendee_list(self):
+        """Test attendee page."""
     
-    # result = self.client.get("/event=<int:event_id>/event-info/")
-    #     self.assertIn('Test Event', result.data)
+        result = self.client.get("/event={}/event-info/".format(self.test_event.event_id))
+        self.assertIn('Pocohontas', result.data)
+        # import pdb; pdb.set_trace()
 
+    def test_table_assignments_display(self):
+        '''Test table assignments display'''
+
+        result = self.client.get('/event={}/table-assignments/'.format(
+            self.test_event.event_id))
+        self.assertIn('Test Table', result.data)
+
+    def test_table_assignments(self):
+        '''Test seating algorithm'''
+
+        self.assertEqual(self.pocohontas.table_id, self.john.table_id)
 
 
 

@@ -11,7 +11,7 @@
         <ul> 
         {% for attendee in assigned_attendees %}
             {% if attendee.table_id == table.table_id %}
-                <li>{{ attendee.first_name }}, {{ attendee.last_name }}</li>
+                <li>{{ attendee.last_name }}, {{ attendee.first_name }}</li>
             {% endif %}
         {% endfor %}
         </ul>

@@ -129,31 +129,27 @@ def example_data():
     User.query.delete()
     SeatingRelationship.query.delete()
     
-
-    
-
     # Add sample data
     test_user = User(email='test@testemail.com', password='password', name='foo')
     db.session.add(test_user)
     db.session.commit()
    
-    e = Event(event_name = 'Test Event', event_description='Testing',
-     location='Test Location', time = 'Test time', user_id=test_user.user_id)
+    e = Event(event_name='Test Event', event_description='Testing',
+     location='Test Location', time='Test time', user_id=test_user.user_id)
     db.session.add(e)
     db.session.commit()
+
     t = Table(table_name='Test Table', max_seats=8, event_id=e.event_id)
     john = Attendee(first_name='John', last_name="Smith", event_id=e.event_id)
     pocohontas = Attendee(first_name='Pocohontas', last_name="Chiefess", event_id=e.event_id)
-    relationship = SeatingRelationship(primary_attendee= john.attendee_id,
-     secondary_attendee= pocohontas.attendee_id, relationship_code='must')
-
     db.session.add_all([t, john, pocohontas])
+    db.session.commit()    
+
+    relationship = SeatingRelationship(primary_attendee=john.attendee_id,
+     secondary_attendee=pocohontas.attendee_id, 
+     relationship_code='must')
     db.session.add(relationship)
     db.session.commit()
-
-    
-    
-    
 
 
 def connect_to_db(app, database='postgresql:///seater'):

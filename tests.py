@@ -5,8 +5,6 @@ from assignments import table_assignments
 
 # import doctest
 
-
-
 # def load_tests(loader, tests, ignore):
 #     """Also run our doctests and file-based doctests."""
 
@@ -22,7 +20,6 @@ class HomepageServerRoutesTestCase(unittest.TestCase):
         server.app.config['SECRET_KEY'] = "Lava12#$!!"
 
     def test_homepage_logged_out(self):
-
         result = self.client.get('/')
         self.assertEqual(result.status_code, 200)
         self.assertIn('<a href="/">Register</a>', result.data)
@@ -43,7 +40,6 @@ class HomepageServerRoutesLoggedInTestCase(unittest.TestCase):
                 se['username'] = 'foo'
 
     def test_homepage_logged_in(self):
-
         result = self.client.get('/')
         self.assertEqual(result.status_code, 200)
         self.assertIn('<a href="/events">View All Events</a>', result.data)
@@ -53,7 +49,6 @@ class HomepageServerRoutesLoggedInTestCase(unittest.TestCase):
 
     # tear down by logging out
     def tearDown(self):
-
         with self.client as c:
             with c.session_transaction() as se:
                 se.pop('user_id')
@@ -81,8 +76,8 @@ class FlaskTestsDatabase(unittest.TestCase):
 
         test_user = User.query.filter_by(email = 'test@testemail.com').first()
         self.test_event = Event.query.filter_by(event_description='Testing').first()
-        self.pocohontas = Attendee.query.filter_by(first_name = 'pocohontas').first()
-        self.john = Attendee.query.filter_by(first_name = 'john').first()
+        self.pocohontas = Attendee.query.filter_by(first_name = 'Pocohontas').first()
+        self.john = Attendee.query.filter_by(first_name = 'John').first()
         self.test_table = Table.query.filter_by(table_name = 'Test Table').first()
         # self.attendee_ids = db.session.query(Attendee.attendee_id).filter(Attendee.event_id = self.test_event.event_id)
         # self.table_ids =
@@ -114,21 +109,22 @@ class FlaskTestsDatabase(unittest.TestCase):
     
         result = self.client.get("/event={}/event-info/".format(self.test_event.event_id))
         self.assertIn('Pocohontas', result.data)
+        self.assertIn('John Smith', result.data)
 
     def test_table_assignments_display(self):
         '''Test table assignments display'''
 
+        # make the assignments
+        self.client.post('/event={}/table-assignments/'.format(
+            self.test_event.event_id))
+
+        # verify the assignments
         result = self.client.get('/event={}/table-assignments/'.format(
             self.test_event.event_id))
+
         self.assertIn('Test Table', result.data)
-
-    def test_table_assignments(self):
-        '''Test seating algorithm'''
-
-        assignments = table_assignments(self.test_event.event_id, self.attendee_ids, 
-            self.test_table.table_id, total_seats)
-        self.assertEqual(self.pocohontas.table_id, self.john.table_id)
-
+        self.assertIn('<li>Smith, John</li>', result.data)
+        self.assertIn('<li>Chiefess, Pocohontas</li>', result.data)
 
 
 if __name__ == '__main__':

@@ -138,6 +138,9 @@ def add_event():
 
 @app.route('/event=<int:event_id>/update-event', methods=['GET'])
 def display_edit_event(event_id):
+    '''Display edit event form'''
+    if is_not_logged_in():
+        return redirect('/')
 
     event = Event.query.filter_by(event_id=event_id).first()
     return render_template('edit-event.html',

@@ -1,6 +1,7 @@
 import server
 import unittest
 from model import connect_to_db, db, example_data, User, Attendee, Event, Table, SeatingRelationship
+from assignments import table_assignments
 
 # import doctest
 
@@ -82,7 +83,10 @@ class FlaskTestsDatabase(unittest.TestCase):
         self.test_event = Event.query.filter_by(event_description='Testing').first()
         self.pocohontas = Attendee.query.filter_by(first_name = 'pocohontas').first()
         self.john = Attendee.query.filter_by(first_name = 'john').first()
-        
+        self.test_table = Table.query.filter_by(table_name = 'Test Table').first()
+        # self.attendee_ids = db.session.query(Attendee.attendee_id).filter(Attendee.event_id = self.test_event.event_id)
+        # self.table_ids =
+
         with self.client as c:
             with c.session_transaction() as se:
                 se['user_id'] = test_user.user_id
@@ -110,7 +114,6 @@ class FlaskTestsDatabase(unittest.TestCase):
     
         result = self.client.get("/event={}/event-info/".format(self.test_event.event_id))
         self.assertIn('Pocohontas', result.data)
-        # import pdb; pdb.set_trace()
 
     def test_table_assignments_display(self):
         '''Test table assignments display'''
@@ -122,6 +125,8 @@ class FlaskTestsDatabase(unittest.TestCase):
     def test_table_assignments(self):
         '''Test seating algorithm'''
 
+        assignments = table_assignments(self.test_event.event_id, self.attendee_ids, 
+            self.test_table.table_id, total_seats)
         self.assertEqual(self.pocohontas.table_id, self.john.table_id)
 
 

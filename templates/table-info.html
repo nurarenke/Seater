@@ -1,6 +1,15 @@
 {% extends 'base.html' %}
 {% block title %}Tables{% endblock %}
 {% block content %}
+<!--Go Back to Event NavBar button-->
+<script>
+$(document).ready(function() {
+    
+    $('#navbar-ul-li-a').attr("href", "/event={{event.event_id}}/event-info/")
+    $('#navbar-ul-li-a').html("Go back to: {{ event.event_name }}")
+  
+})
+</script>
 <div class="container">
     <div class="row">
       <div class="col-md-6 col-lg-6">

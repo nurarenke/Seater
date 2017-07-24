@@ -1,6 +1,15 @@
 {% extends 'base.html' %}
 {% block title %}Table Arrangments{% endblock %}
 {% block content %}
+<!--Go Back to Event NavBar button-->
+<script>
+$(document).ready(function() {
+    
+    $('#navbar-ul-li-a').attr("href", "/event={{event.event_id}}/event-info/")
+    $('#navbar-ul-li-a').html("Go back to: {{ event.event_name }}")
+  
+})
+</script>
 <div>
 <!--Display seating arrangements-->
 <h2>Table Assignments</h2>
@@ -25,12 +34,12 @@
 <div>
     <h2>Create your Seating Arrangements</h2>
     <form action='/event={{ event_id }}/table-assignments/' method="POST">
-    <input type='submit' name='btn' value='Create Seating Arrangements'>
+    <button type='submit' class="btn btn-default">Create Seating Arrangements</button>
     </form>
 </div>
 <div><br>
     <form action='/event={{ event_id }}/clear-table-assignments/' method="POST">
-    <input type='submit' name='btn' value='Clear Seating Arrangements'>
+    <button type='submit' class="btn btn-default">Clear Seating Arrangements</button>
     </form>
 </div>
 {% endblock %}

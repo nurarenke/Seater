@@ -423,6 +423,7 @@ def update_relationship(attendee_id, event_id):
 
 @app.route('/event=<int:event_id>/new-table/', methods=['GET'])
 def new_table(event_id):
+    event = Event.query.get(event_id)
     table = None
     event_id = event_id
     seated_at_table = None
@@ -430,7 +431,8 @@ def new_table(event_id):
     return render_template('table-info.html',
                             event_id=event_id,
                             seated_at_table=seated_at_table,
-                            table=table)
+                            table=table,
+                            event=event)
 
 @app.route('/event=<int:event_id>/create-tables/', methods=['POST'])
 def create_tables(event_id):
@@ -503,6 +505,7 @@ def table_detail(event_id, table_id):
     if is_not_logged_in():
         return redirect('/')
 
+    event = Event.query.get(event_id)
     event_id = event_id
 
     table = Table.query.get(table_id)
@@ -512,7 +515,8 @@ def table_detail(event_id, table_id):
     return render_template('/table-info.html',
                             table=table,
                             seated_at_table=seated_at_table,
-                            event_id=event_id)
+                            event_id=event_id,
+                            event=event)
 
 @app.route('/event=<int:event_id>/table-assignments/', methods=['POST'])
 def assign_tables(event_id):
@@ -553,7 +557,7 @@ def display_tables(event_id):
     '''display tables'''
     if is_not_logged_in():
         return redirect('/')
-
+    event = Event.query.get(event_id)
     event_id=event_id
     # query for all of attendees who are assigned to a table
     assigned_attendees = db.session.query(Attendee).filter(Attendee.event_id == event_id, Attendee.table_id != None).join(
@@ -564,7 +568,8 @@ def display_tables(event_id):
     return render_template('/table-assignments.html',
                             assigned_attendees=assigned_attendees,
                             assigned_tables=assigned_tables,
-                            event_id=event_id)
+                            event_id=event_id,
+                            event=event)
 
 @app.route('/event=<int:event_id>/clear-table-assignments/', methods=['POST'])
 def clear_tables(event_id):

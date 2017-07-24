@@ -1,6 +1,8 @@
 body {
     
-    font-family: Century Gothic;
+    font-family:'Josefin Slab', serif;
+    font-size:16px;
+   
     
 };
 .attendee-info {
@@ -9,3 +11,25 @@ body {
 
 };
 
+#splash {
+    margin-bottom: 25px;
+    font-size: 18px;
+}
+
+#logo {
+
+    height:200px;
+    text-align:center;
+    padding:10px;
+}
+
+#logo-text {
+
+    font-size:18px;
+    text-align:center;
+}
+
+.list-group-item-heading{
+
+    font-weight: bold;
+}

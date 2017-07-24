@@ -134,7 +134,7 @@ def add_event():
     db.session.add(new_event)
     db.session.commit()
 
-    return redirect('/event-info/{}'.format(new_event.event_id))
+    return redirect('/event={}/event-info/'.format(new_event.event_id))
 
 @app.route('/event=<int:event_id>/update-event', methods=['GET'])
 def display_edit_event(event_id):

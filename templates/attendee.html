@@ -10,166 +10,179 @@ $(document).ready(function() {
 })
 
 </script>
-{% if attendee == None %}
-<div class="well spaced" style="width:40%;">
-<!--Create an Attendee-->
-  <h2>Add an Attendee</h2>
+<div class="container-fluid">
+          <div class="row">
+                              <div class="col-xs-6 col-md-6 col-lg-6">
+                                  {% if attendee == None %}
+                                  <div class="well spaced">
+                                  <!--Create an Attendee-->
+                                    <h2>Add an Attendee</h2>
 
-  <form id='add_attendee_form' class="form-horizontal" action='/create-attendee/{{ event_id }}' method='POST'>
-    <div class="form-group">
-      <label>First Name</label>
-        <input type='text' name='first_name' required>
-    </div>
-    <div class="form-group">
-      <label>Last Name</label>
-        <input type='text' name='last_name' required>
-    </div>
-    <div class="form-group">
-      <label>Email</label>
-        <input type='email' name='email'>
-    </div>
-    <div class="form-group">
-      <label>Street</label>
-        <input type='text' name='street'>
-    </div>
-    <div class="form-group">
-      <label>City</label>
-        <input type='text' name='city'>
-    </div>
-    <div class="form-group">
-      <label>State</label>
-        <input type='text' name='state'>
-    </div>
-    <div class="form-group">
-      <label>Zipcode</label>
-        <input type='number' name='zipcode'>
-    </div>
-    <div class="form-group">
-      <label>Vip</label>
-       <input type='checkbox' name='vip' value='True'>
-    </div>
-    <div class="form-group">
-      <label>Meal Request</label>
-        <input type='text' name='meal_request'>
-    </div>
-    <div class="form-group">
-      <label>Note</label>
-        <textarea rows="4" cols="50" name="note" form='add_attendee_form'>Enter text here...
-        </textarea>
-    </div>
-    <div class="form-group">
-      <input type='submit' name='btn' value='Submit'>
-    </div>
-  </form>
-</div>
-{% else %}
-<div class="well spaced" style="width:40%;">
-<!--Update or delete an existing attendee-->
-  <h2>Edit an Attendee</h2>
+                                    <form id='add_attendee_form' class="form-horizontal" action='/create-attendee/{{ event_id }}' method='POST'>
+                                      <div class="form-group">
+                                        <label>First Name</label>
+                                          <input type='text' name='first_name' required>
+                                      </div>
+                                      <div class="form-group">
+                                        <label>Last Name</label>
+                                          <input type='text' name='last_name' required>
+                                      </div>
+                                      <div class="form-group">
+                                        <label>Email</label>
+                                          <input type='email' name='email'>
+                                      </div>
+                                      <div class="form-group">
+                                        <label>Street</label>
+                                          <input type='text' name='street'>
+                                      </div>
+                                      <div class="form-group">
+                                        <label>City</label>
+                                          <input type='text' name='city'>
+                                      </div>
+                                      <div class="form-group">
+                                        <label>State</label>
+                                          <input type='text' name='state'>
+                                      </div>
+                                      <div class="form-group">
+                                        <label>Zipcode</label>
+                                          <input type='number' name='zipcode'>
+                                      </div>
+                                      <div class="form-group">
+                                        <label>Vip</label>
+                                         <input type='checkbox' name='vip' value='True'>
+                                      </div>
+                                      <div class="form-group">
+                                        <label>Meal Request</label>
+                                          <input type='text' name='meal_request'>
+                                      </div>
+                                      <div class="form-group">
+                                        <label>Note</label>
+                                          <textarea rows="4" cols="50" name="note" form='add_attendee_form'>Enter text here...
+                                          </textarea>
+                                      </div>
+                                      <div class="form-group">
+                                        <input type='submit' name='btn' value='Submit'>
+                                      </div>
+                                    </form>
+                                  </div>
+                                  {% else %}
+                                  <div class="well spaced" style="width:75%;">
+                                  <!--Update or delete an existing attendee-->
+                                    <h2>Edit an Attendee</h2>
 
-  <form class="form-horizontal" action='/{{ event_id }}/update-attendee/{{ attendee.attendee_id }}' method='POST'>
-    <div class="form-group">
-      <label>First Name</label>
-        <input type='text' name='first_name' value='{{ attendee.first_name }}' required>
-    </div>
-    <div class="form-group">
-      <label>Last Name</label>
-        <input type='text' name='last_name' value="{{ attendee.last_name }}" required>
-    </div>
-    <div class="form-group">
-      <label>Email</label>
-        <input type='email' name='email' value="{{ attendee.attendee_email }}">
-    </div>
-    <div class="form-group">
-      <label>Street</label>
-        <input type='text' name='street' value="{{ attendee.street }}">
-    </div>
-    <div class="form-group">
-      <label>City</label>
-        <input type='text' name='city' value="{{ attendee.city }}">
-    </div>
-    <div class="form-group">
-      <label>State</label>
-        <input type='text' name='state' value="{{ attendee.state }}">
-    </div>
-    <div class="form-group">
-      <label>Zipcode</label>
-        <input type='number' name='zipcode' value="{{ attendee.zipcode }}">
-    </div>
-    <div class="form-group">
-      <label>Vip</label>
-       <input type='checkbox' name='vip' value='True' value="{{ attendee.is_vip }}">
-    </div>
-    <div class="form-group">
-      <label>Meal Request</label>
-        <input type='text' name='meal_request' value="{{ attendee.meal_request }}">
-    </div>
-    <div class="form-group">
-      <label>Note</label>
-        <textarea rows="4" cols="50" name="note" form='edit_attendee_form' value="{{ attendee.note }}">
-        Enter text here...
-        </textarea>
-    </div>
-    <div class="form-group">
-      <input id='save-btn' type='submit' name='submit' value='Save'>
-    </div>
-  </form> 
-   <form class="form-horizontal" action='/{{event_id}}/delete-attendee/{{attendee.attendee_id}}'}} method='POST'>
-    <div class="form-group">
-      <input id='delete-btn' type='submit' name='submit' value='Delete'>
-    </div>
-  </form>
-</div>
-  <!--table assignment-->
-<div>
-<h2>Table Assignment</h2>
-  {% if attendee.table_id %}
-    Assigned Table: <a href='/table-info/{{ attendee.table_id }}'>{{ attendee.table_id }}, {{ attendee.table.table_name }}</a>
-  {% else %}
-    Assigned Table: Not Assigned Yet
-  {% endif %}
-  </div>
-</div>
-<!--create relationships-->
-<div>
-  <h2>Create Relationships</h2>
-  <form action='/attendee/{{ attendee.attendee_id }}/{{ event_id }}' method='POST'>
+                                    <form class="form-horizontal" action='/{{ event_id }}/update-attendee/{{ attendee.attendee_id }}' method='POST'>
+                                      <div class="form-group">
+                                        <label>First Name</label>
+                                          <input type='text' name='first_name' value='{{ attendee.first_name }}' required>
+                                      </div>
+                                      <div class="form-group">
+                                        <label>Last Name</label>
+                                          <input type='text' name='last_name' value="{{ attendee.last_name }}" required>
+                                      </div>
+                                      <div class="form-group">
+                                        <label>Email</label>
+                                          <input type='email' name='email' value="{{ attendee.attendee_email }}">
+                                      </div>
+                                      <div class="form-group">
+                                        <label>Street</label>
+                                          <input type='text' name='street' value="{{ attendee.street }}">
+                                      </div>
+                                      <div class="form-group">
+                                        <label>City</label>
+                                          <input type='text' name='city' value="{{ attendee.city }}">
+                                      </div>
+                                      <div class="form-group">
+                                        <label>State</label>
+                                          <input type='text' name='state' value="{{ attendee.state }}">
+                                      </div>
+                                      <div class="form-group">
+                                        <label>Zipcode</label>
+                                          <input type='number' name='zipcode' value="{{ attendee.zipcode }}">
+                                      </div>
+                                      <div class="form-group">
+                                        <label>Vip</label>
+                                         <input type='checkbox' name='vip' value='True' value="{{ attendee.is_vip }}">
+                                      </div>
+                                      <div class="form-group">
+                                        <label>Meal Request</label>
+                                          <input type='text' name='meal_request' value="{{ attendee.meal_request }}">
+                                      </div>
+                                      <div class="form-group">
+                                        <label>Note</label>
+                                          <textarea rows="4" cols="50" name="note" form='edit_attendee_form' value="{{ attendee.note }}">
+                                          Enter text here...
+                                          </textarea>
+                                      </div>
+                                      <div class="form-group">
+                                        <input id='save-btn' type='submit' name='submit' value='Save'>
+                                      </div>
+                                    </form> 
+                                     <form class="form-horizontal" action='/{{event_id}}/delete-attendee/{{attendee.attendee_id}}'}} method='POST'>
+                                      <div class="form-group">
+                                        <input id='delete-btn' type='submit' name='submit' value='Delete'>
+                                      </div>
+                                    </form>
+                                  </div>
+                                    <!--table assignment-->
+                                  <div class="well spaced">
+                                  <h2>Table Assignment</h2>
+                                    {% if attendee.table_id %}
+                                      Assigned Table: <a href='/table-info/{{ attendee.table_id }}'>{{ attendee.table_id }}, {{ attendee.table.table_name }}</a>
+                                    {% else %}
+                                      Assigned Table: Not Assigned Yet
+                                    {% endif %}
+                                    
+                                  </div>
+                                  <!--End of column-->
+                              </div>
+                            
+                              <div class="col-xs-6 col-md-6 col-lg-6">
+                                <!--create relationships-->
+                                <div class="well spaced">
+                                  <h2>Create Relationships</h2>
+                                  <form action='/attendee/{{ attendee.attendee_id }}/{{ event_id }}' method='POST'>
 
-    <label>Select an Attendee</label>
-    <select name='secondary-attendee'>
-      {% for a in attendees_not_yet_related_to | sort(attribute='last_name') %}
-        <option value='{{ a.attendee_id }}'>{{ a.first_name }} {{ a.last_name }}</option>
-      {% endfor %}
-    </select>
+                                    <label>Select an Attendee</label>
+                                    <select name='secondary-attendee'>
+                                      {% for a in attendees_not_yet_related_to | sort(attribute='last_name') %}
+                                        <option value='{{ a.attendee_id }}'>{{ a.first_name }} {{ a.last_name }}</option>
+                                      {% endfor %}
+                                    </select>
 
-    <label>Select an Attendee</label>
-    <select name='relationship-code'>
-        <option value='must'>Must sit with</option>
-        <option value='want'>Want to sit with</option>
-        <option value='must_not'>Must not sit with</option>
-    </select>
-    <input type="submit" value="Submit">
-  </form>
-</div>
-<!--list of relationships-->
-<div>
-  <h2>Established Relationships</h2>
-  {% if relationships_with_attendee %}
-  <ul>
-      {% for secondary_attendee, relationship_code in relationships_with_attendee %}
-      <li>
-        <a href='/attendee/{{ event_id }}/{{ secondary_attendee.attendee_id }}'>
-        {{ secondary_attendee.last_name }}, {{ secondary_attendee.first_name }} - {{ relationship_code }} 
-        </a>
-        <form action='/event={{ event_id }}/delete-attendee/{{attendee.attendee_id}}/{{ secondary_attendee.attendee_id }}' method='POST'>
-          <input type='submit' name='submit' value='Delete'>
-          </form>
-      </li>
-      {% endfor %}
-  </ul>
-  {% else %}
-  <p>No relationships yet.</p>
-  {% endif %}
+                                    <label>Select an Attendee</label>
+                                    <select name='relationship-code'>
+                                        <option value='must'>Must sit with</option>
+                                        <option value='want'>Want to sit with</option>
+                                        <option value='must_not'>Must not sit with</option>
+                                    </select>
+                                    <input type="submit" value="Submit">
+                                  </form>
+                                </div>
+                                <!--list of relationships-->
+                                <div class="well spaced">
+                                  <h2>Established Relationships</h2>
+                                  {% if relationships_with_attendee %}
+                                  <ul>
+                                      {% for secondary_attendee, relationship_code in relationships_with_attendee %}
+                                      <li>
+                                        <a href='/attendee/{{ event_id }}/{{ secondary_attendee.attendee_id }}'>
+                                        {{ secondary_attendee.last_name }}, {{ secondary_attendee.first_name }} - {{ relationship_code }} 
+                                        </a>
+                                        <form action='/event={{ event_id }}/delete-attendee/{{attendee.attendee_id}}/{{ secondary_attendee.attendee_id }}' method='POST'>
+                                          <input type='submit' name='submit' value='Delete'>
+                                          </form>
+                                      </li>
+                                      {% endfor %}
+                                  </ul>
+                                  {% else %}
+                                  <p>No relationships yet.</p>
+                                  {% endif %}
+                                </div>
+                                <!--End of column-->
+                              </div>
+            <!--End of row-->
+          </div>
+<!--End of container-->
 </div>
 
 {% endif %}

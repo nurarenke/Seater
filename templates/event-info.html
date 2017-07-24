@@ -52,25 +52,26 @@
     <div class="col-md-6 col-lg-6">
       <div class="well spaced" style="width:80%;">
         <h2>Tables:</h2>
+          <!--Create a table button-->
+          <div>
+            <a href="/event={{ event.event_id }}/new-table/"><button type="button" class="btn btn-primary">Create Table</button></a>
+          </div>
         {% if tables %}
-          <ul>
+          <ul class="list-group">
             {% for table in tables %}
-            <li><a href="/event={{ event.event_id }}/table-info/{{ table.table_id }}">
-              Table Name: {{ table.table_name}}, Max-Seats: {{ table.max_seats }}
+            <a class="list-group-item list-group-item-action" href="/event={{ event.event_id }}/table-info/{{ table.table_id }}">
+              <h4 class="list-group-item-heading">Table Name: {{ table.table_name}}</h4>
+              <p class="list-group-item-text">Max-Seats: {{ table.max_seats }}</p>
               </a>
-            </li>
             {% endfor %}
-        </ul>
+          </ul>
         {% else %}
           <div>You do not have any tables yet... </div>
         {% endif %}
       </div>
-      <!--Create a table button-->
-      <div>
-        <a href="/event={{ event.event_id }}/new-table/"><button type="button" class="btn btn-primary">Create Table</button></a>
-      </div>
+      
       <!--View table assignments button-->
-      <div>
+      <div class="well spaced" style="width:80%;">
         <h2>Table Assignments</h2>
         <a href="/event={{ event.event_id }}/table-assignments/"><button type="button" class="btn btn-primary">View Table Assignments</button></a>
       </div>

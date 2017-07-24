@@ -1,6 +1,15 @@
 {% extends 'base.html' %}
 {% block title %}Seater{% endblock %}
 {% block content %}
+<script>
+$(document).ready(function() {
+    
+    $('#navbar-ul-li-a').attr("href", "/event={{event.event_id}}/event-info/")
+    $('#navbar-ul-li-a').html("Go back to: {{ event.event_name }}")
+  
+})
+
+</script>
 {% if attendee == None %}
 <div class="well spaced" style="width:40%;">
 <!--Create an Attendee-->

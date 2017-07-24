@@ -2,65 +2,83 @@
 {% block title %}Event Info{% endblock %}
 {% block content %}
 
-<div>
-  <div>
-  <!--Display event info-->
-    <h1>{{ event.event_name }}</h1>
-    <div>Description: {{ event.event_description }}</div>
-    <div>Location: {{ event.location }}</div>
-    <div>Time: {{ event.time }}</div>
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 col-lg-12">
+      <div class="well spaced">
+      <!--Display event info-->
+        <h1>{{ event.event_name }}</h1>
+        <div>Description: {{ event.event_description }}</div>
+        <div>Location: {{ event.location }}</div>
+        <div>Time: {{ event.time }}</div>
+        <!--Edit event button-->
+        <div>
+          <a href="/event={{ event.event_id }}/update-event">
+            <button type="button" class="btn btn-primary">Edit Event</button>
+          </a>
+        </div>
+        <!--End of event info div-->
+      </div>
+      <!--End of column-->
+    </div>
+    <!--End of row-->
   </div>
-</div>
-<!--Edit event button-->
-<div>
-  <a href="/event={{ event.event_id }}/update-event"><button type="button">Edit Event</button></a>
-</div>
-<!--List of Attendees-->
-<div>
-    <h2>Attendees</h2>
-    {% if attendees %}
-    <ul>
-      {% for attendee in attendees | sort(attribute='last_name') %}
-          <li>
-              <a href="/attendee/{{ attendee.event_id }}/{{ attendee.attendee_id}}">
-                {{ attendee.first_name }} {{ attendee.last_name }}
-              </a>
-          </li>
-      {% endfor %}
-    </ul>
-    {% else %}
-      <div>You do not have any attendees yet... </div>
-    {% endif %}
-</div>
-<!--Create attendee button-->
-<div>
-  <a href="/attendee/{{ event.event_id }}/new-attendee"><button type="button">Create Attendee</button></a>
-</div>
-<!--Display your created tables-->
-<div>
-  <h2>Tables:</h2>
-  {% if tables %}
-    <ul>
-      {% for table in tables %}
-      <li><a href="/event={{ event.event_id }}/table-info/{{ table.table_id }}">
-        Table Name: {{ table.table_name}}, Max-Seats: {{ table.max_seats }}
-        </a>
-      </li>
-      {% endfor %}
-  </ul>
-  {% else %}
-    <div>You do not have any tables yet... </div>
-  {% endif %}
-</div>
-<!--Create a table button-->
-<div>
-  <a href="/event={{ event.event_id }}/new-table/"><button type="button">Create Table</button></a>
-</div>
-<!--View table assignments button-->
-<div>
-  <h2>Table Assignments</h2>
-  <a href="/event={{ event.event_id }}/table-assignments/"><button type="button">View Table Assignments</button></a>
-</div>
 
+  <div class="row">
+    <div class="col-md-6 col-lg-6">
+      <!--List of Attendees block-->
+      <div class="well spaced" style="width:80%;">
+        <h2>Attendees</h2>
+        <!--Create attendee button-->
+        <div>
+          <a href="/attendee/{{ event.event_id }}/new-attendee"><button type="button" class="btn btn-primary">Create Attendee</button></a>
+        </div>
+        <!--Attendee List-->
+        {% if attendees %}
+        <ul class="list-group">
+          {% for attendee in attendees | sort(attribute='last_name') %}
+            <a class="list-group-item list-group-item-action" href="/attendee/{{ attendee.event_id }}/{{ attendee.attendee_id}}">
+              {{ attendee.first_name }} {{ attendee.last_name }}
+            </a> 
+          {% endfor %}
+        </ul>
+        {% else %}
+          <div>You do not have any attendees yet... </div>
+        {% endif %}
+      </div>
+      <!--End of attendees column-->
+    </div>
+    <!--Display your created tables-->
+    <div class="col-md-6 col-lg-6">
+      <div class="well spaced" style="width:80%;">
+        <h2>Tables:</h2>
+        {% if tables %}
+          <ul>
+            {% for table in tables %}
+            <li><a href="/event={{ event.event_id }}/table-info/{{ table.table_id }}">
+              Table Name: {{ table.table_name}}, Max-Seats: {{ table.max_seats }}
+              </a>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+          <div>You do not have any tables yet... </div>
+        {% endif %}
+      </div>
+      <!--Create a table button-->
+      <div>
+        <a href="/event={{ event.event_id }}/new-table/"><button type="button" class="btn btn-primary">Create Table</button></a>
+      </div>
+      <!--View table assignments button-->
+      <div>
+        <h2>Table Assignments</h2>
+        <a href="/event={{ event.event_id }}/table-assignments/"><button type="button" class="btn btn-primary">View Table Assignments</button></a>
+      </div>
+      <!--End of Tables column-->
+    </div>
+    <!--End of attendees and table row-->
+  </div>
+  <!--End of container-->
+</div>
 {% endblock %}
 

@@ -330,6 +330,7 @@ def display_attendee(event_id, attendee_id):
     if is_not_logged_in():
         return redirect('/')
 
+    event = Event.query.filter_by(event_id=event_id).first()
     event_id = event_id
     # store the attendee_id from the page
     attendee = Attendee.query.get(attendee_id)
@@ -367,7 +368,8 @@ def display_attendee(event_id, attendee_id):
                             attendees=attendees,
                             event_id=event_id, 
                             relationships_with_attendee=relationships_with_attendee,
-                            attendees_not_yet_related_to=attendees_not_yet_related_to)
+                            attendees_not_yet_related_to=attendees_not_yet_related_to,
+                            event=event)
 
 @app.route('/event=<int:event_id>/delete-attendee/<int:attendee_id>/<int:secondary_attendee_id>', methods=['POST'])
 def delete_relationship(attendee_id, secondary_attendee_id, event_id):

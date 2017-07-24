@@ -7,6 +7,8 @@
 
     <title>{% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
+    <script src="http://code.jquery.com/jquery.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <link rel="stylesheet" type="text/css" href="/static/mystyle.css">
     <link href="https://fonts.googleapis.com/css?family=Josefin+Slab" rel="stylesheet">
 </head>
@@ -28,6 +30,7 @@
       {% if "user_id" in session %}
           <li><a href="/events">View All Events</a></li>
           <li><a href="/logout">Logout</a></li>
+          <li><a id='navbar-ul-li-a'></a></li>
         {% else %}
             <li><a href="/">Register</a></li>
             <li><a href="/">Login</a></li>
@@ -48,7 +51,6 @@
 {% block content %}
 {% endblock %}
 </div>
- <script src="http://code.jquery.com/jquery.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+ 
 </body>
 </html>

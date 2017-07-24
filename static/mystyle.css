@@ -34,7 +34,18 @@ body {
     font-weight: bold;
 }
 
-.btn {
+.btn-primary {
 
     margin-bottom: 0.5cm;
+}
+
+.delete-button {
+
+    align-self: left;
+}
+
+#relation-delete{
+
+    margin-top:0.5cm;
+    margin-bottom:0.5cm;
 }

@@ -260,12 +260,14 @@ def new_attendee(event_id):
     if is_not_logged_in():
         return redirect('/')
 
+    event = Event.query.get(event_id)
     attendee = None
     event_id = event_id
 
     return render_template("attendee.html",
                             attendee=attendee,
-                            event_id=event_id)
+                            event_id=event_id,
+                            event=event)
 
 @app.route('/<int:event_id>/delete-attendee/<int:attendee_id>', methods=['POST'])
 def delete_attendee(event_id, attendee_id):

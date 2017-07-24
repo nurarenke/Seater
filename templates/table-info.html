@@ -1,65 +1,83 @@
 {% extends 'base.html' %}
 {% block title %}Tables{% endblock %}
 {% block content %}
+<div class="container">
+    <div class="row">
+      <div class="col-md-6 col-lg-6">
+        {% if table != None %}
+        <!--Display table info-->
+        <div class="well spaced">
+          <h2>Edit Table</h2>
 
-{% if table != None %}
-<!--Display table info-->
-<div class="well spaced" style="width:40%;">
-  <h2>Edit Table</h2>
+          <form class="form-horizontal" action='/event={{ event_id }}/update-table/table={{ table.table_id }}' method='POST'>
+            <div class="form-group"> 
+              <label>Table Name</label>
+              <input type='text' name='table-name' value='{{ table.table_name }}'>
+            </div>
+            <div class="form-group"> 
+              <label>Number of Seats</label>
+              <input type='number' name='max-seats' value='{{ table.max_seats }}'>
+            </div>
+            <div class="form-group"> 
+              <button type='submit' class="btn btn-default">Save</button>
+            </div>
+          </form>
+          <form class="form-horizontal" action='/event={{ event_id }}/delete-table/table={{ table.table_id }}' method='POST'>
+            <div class="form-group"> 
+              <button type='submit' class="btn btn-default" class="delete-button">Delete</button>
+            </div>
+          </form>
+          <!--End of Edit Table form-->
+        </div>
+      <!--End of column-->
+      </div>
+      <div class="col-md-6 col-lg-6">
+        <div class="well spaced">
+          <h2>Seated at Table</h2>
+          {%if seated_at_table %}
+            <ul class="list-group">
+                {% for attendee in seated_at_table %}
+                <a class="list-group-item list-group-item-action" href="/attendee/{{ attendee.event_id }}/{{ attendee.attendee_id }}">{{ attendee.first_name }} {{ attendee.last_name }}</a>
+                {% endfor %}
+                
+            </ul>
+          {% else %}
+            <p>You do not have any arrangements yet.</p>
+          {% endif %}
+          <!--End of Seated at table div-->
+        </div>
+      <!--End of Seated at Table Column-->
+      </div>
+    <!--End of row-->
+    </div>
 
-  <form class="form-horizontal" action='/event={{ event_id }}/update-table/table={{ table.table_id }}' method='POST'>
-    <div class="form-group"> 
-      <label>Table Name</label>
-      <input type='text' name='table-name' value='{{ table.table_name }}'>
-    </div>
-    <div class="form-group"> 
-      <label>Number of Seats</label>
-      <input type='number' name='max-seats' value='{{ table.max_seats }}'>
-    </div>
-    <div class="form-group"> 
-      <input type='submit' name='btn' value='Save'>
-    </div>
-  </form>
-  <form class="form-horizontal" action='/event={{ event_id }}/delete-table/table={{ table.table_id }}' method='POST'>
-    <div class="form-group"> 
-      <input type='submit' name='btn' value='Delete'>
-    </div>
-  </form>
-</div>
+  {% else %}
+  <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <!--Create a Table-->
+            <div class="well spaced">
+              <h2>Create your Tables:</h2>
 
-<div>
-<h2>Seated at Table</h2>
-{%if seated_at_table %}
-  <ul>
-      {% for attendee in seated_at_table %}
-      <li><a href="/attendee/{{ attendee.event_id }}/{{ attendee.attendee_id }}">{{ attendee.first_name }} {{ attendee.last_name }}</a></li>
-      {% endfor %}
-      
-  </ul>
-{% else %}
-  <p>You do not have any arrangements yet.</p>
+              <form class="form-horizontal" action='/event={{ event_id }}/create-tables/' method='POST'>
+                <div class="form-group"> 
+                  <label>Table Name</label>
+                  <input type='text' name='table-name'><br><br>
+                </div>
+                <div class="form-group">
+                  <label>Number of Seats</label>
+                  <input type='number' name='max-seats'>
+                </div>
+                <div class="form-group">
+                  <button type='submit' class="btn btn-default">Submit</button>
+                </div>
+              </form>
+            <!--End of create table div-->
+            </div>
+          <!--End column-->
+        </div>
+      <!--End of row-->
+  </div>
 {% endif %}
+<!--End of container-->
 </div>
-
-{% else %}
-<!--Create a Table-->
-<div class="well spaced" style="width:40%;">
-  <h2>Create your Tables:</h2>
-
-  <form class="form-horizontal" action='/event={{ event_id }}/create-tables/' method='POST'>
-    <div class="form-group"> 
-      <label>Table Name</label>
-      <input type='text' name='table-name'><br><br>
-    </div>
-    <div class="form-group">
-      <label>Number of Seats</label>
-      <input type='number' name='max-seats'>
-    </div>
-    <div class="form-group">
-      <input type='submit' name='btn' value='Submit'>
-    </div>
-  </form>
-
-</div>
-{% endif %}
 {% endblock %}

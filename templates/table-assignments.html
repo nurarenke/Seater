@@ -10,36 +10,43 @@ $(document).ready(function() {
   
 })
 </script>
-<div>
-<!--Display seating arrangements-->
-<h2>Table Assignments</h2>
-<ul>
-{% if assigned_attendees %}
-    {% for table in assigned_tables %}
-        <h3>{{ table.table_name }} - {{ table.max_seats}} Seats</h3>
-        <ul> 
-        {% for attendee in assigned_attendees %}
-            {% if attendee.table_id == table.table_id %}
-                <li>{{ attendee.last_name }}, {{ attendee.first_name }}</li>
-            {% endif %}
-        {% endfor %}
-        </ul>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>No Assignments</p>
-{% endif %}
-</div>
-<!--Create Assignments Button-->
-<div>
-    <h2>Create your Seating Arrangements</h2>
-    <form action='/event={{ event_id }}/table-assignments/' method="POST">
-    <button type='submit' class="btn btn-default">Create Seating Arrangements</button>
-    </form>
-</div>
-<div><br>
-    <form action='/event={{ event_id }}/clear-table-assignments/' method="POST">
-    <button type='submit' class="btn btn-default">Clear Seating Arrangements</button>
-    </form>
+<div class="container">
+    <div class="row">
+        <!--Display seating arrangements-->
+        <div class="col-md-12 col-lg-12">
+          <h2>Table Assignments</h2>
+            <form style="float: left" action='/event={{ event_id }}/table-assignments/' method="POST">
+                <button type='submit' class="btn btn-primary">Create New Seating Assignments</button>
+            </form>
+            <form style="float: left; margin-left: 1em" action='/event={{ event_id }}/clear-table-assignments/' method="POST">
+                <button type='submit' class="btn btn-primary">Clear Seating Assignments</button>
+            </form>
+        </div> 
+    </div>
+
+    <div class="row">
+        {% if assigned_attendees %}
+            {% for table in assigned_tables %}
+                <div class="col-md-6 col-lg-6">
+                    <div class="well spaced">
+                        <h3>{{ table.table_name }} - {{ table.max_seats}} Seats</h3>
+                        <ul> 
+                        {% for attendee in assigned_attendees %}
+                            {% if attendee.table_id == table.table_id %}
+                                <li>{{ attendee.last_name }}, {{ attendee.first_name }}</li>
+                            {% endif %}
+                        {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-md-6 col-lg-6">
+                <div class="well spaced">
+                    <h3>No Assignments</h3>
+                </div>
+            </div>
+        {% endif %}
+    </div>
 </div>
 {% endblock %}

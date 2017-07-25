@@ -78,7 +78,6 @@ def login_process():
 
     session["user_id"] = user.user_id
 
-    flash("Logged in")
     return redirect("/events")
 
 @app.route('/logout')
@@ -626,7 +625,7 @@ if __name__ == "__main__":
     # that we invoke the DebugToolbarExtension
 
     # Do not debug for demo
-    app.debug = True
+    app.debug = False
 
     connect_to_db(app)
 

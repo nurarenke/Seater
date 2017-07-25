@@ -2,14 +2,19 @@ body {
     
     font-family:'Josefin Slab', serif;
     font-size:16px;
-   
+    background-image: url(organic-tiles.png);
     
-};
+}
+
+.navbar-color{
+    background-color:#aac9c7 !important;
+}
+
 .attendee-info {
     
     margin-bottom: 20cm;
 
-};
+}
 
 #splash {
     margin-bottom: 25px;

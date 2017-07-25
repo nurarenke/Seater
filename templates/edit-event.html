@@ -1,7 +1,14 @@
 {% extends 'base.html' %}
 {% block title %}Edit Event{% endblock %}
 {% block content %}
-
+<script>
+$(document).ready(function() {
+    
+    $('#navbar-ul-li-a').attr("href", "/event={{event.event_id}}/event-info/")
+    $('#navbar-ul-li-a').html("Go back to: {{ event.event_name }}")
+  
+})
+</script>
 <div class="well spaced" style="width:40%;">
 <h2>Edit event</h2>
 

@@ -13,6 +13,7 @@ from assignments import table_assignments
 #     return tests
 
 class HomepageServerRoutesTestCase(unittest.TestCase):
+    '''Tests to see what pages you see when logged out'''
 
     def setUp(self):
         self.client = server.app.test_client()
@@ -28,6 +29,7 @@ class HomepageServerRoutesTestCase(unittest.TestCase):
         self.assertNotIn('<a href="/logout">Logout</a>', result.data)
 
 class HomepageServerRoutesLoggedInTestCase(unittest.TestCase):
+    '''Tests to see what pages you see when logged in'''
 
     def setUp(self):
         self.client = server.app.test_client()
@@ -60,7 +62,7 @@ class FlaskTestsDatabase(unittest.TestCase):
     """Flask tests that use the database."""
 
     def setUp(self):
-        """Stuff to do before every test."""
+        """Set up fake database and populate it"""
 
         # Get the Flask test client
         self.client = server.app.test_client()
@@ -74,13 +76,12 @@ class FlaskTestsDatabase(unittest.TestCase):
         db.create_all()
         example_data()
 
+        # Query the database
         test_user = User.query.filter_by(email = 'test@testemail.com').first()
         self.test_event = Event.query.filter_by(event_description='Testing').first()
         self.pocohontas = Attendee.query.filter_by(first_name = 'Pocohontas').first()
         self.john = Attendee.query.filter_by(first_name = 'John').first()
         self.test_table = Table.query.filter_by(table_name = 'Test Table').first()
-        # self.attendee_ids = db.session.query(Attendee.attendee_id).filter(Attendee.event_id = self.test_event.event_id)
-        # self.table_ids =
 
         with self.client as c:
             with c.session_transaction() as se:
@@ -88,7 +89,7 @@ class FlaskTestsDatabase(unittest.TestCase):
                 se['name'] = 'foo'
 
     def tearDown(self):
-        """Do at end of every test."""
+        """Log the user out and delete tables from database"""
 
         db.session.close()
         db.drop_all()

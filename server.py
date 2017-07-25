@@ -357,7 +357,7 @@ def display_attendee(event_id, attendee_id):
             relationship_attendee = Attendee.query.get(r.primary_attendee)
         
         relationships_attendee_ids.append(relationship_attendee.attendee_id)
-        relationships_with_attendee.append((relationship_attendee, r.relationship_code)) 
+        relationships_with_attendee.append((relationship_attendee, code_to_phrase(r.relationship_code))) 
 
     # look for attendees with no relationships
     attendees_not_yet_related_to = []
@@ -372,6 +372,7 @@ def display_attendee(event_id, attendee_id):
                             relationships_with_attendee=relationships_with_attendee,
                             attendees_not_yet_related_to=attendees_not_yet_related_to,
                             event=event)
+
 
 @app.route('/event=<int:event_id>/delete-attendee/<int:attendee_id>/<int:secondary_attendee_id>', methods=['POST'])
 def delete_relationship(attendee_id, secondary_attendee_id, event_id):
@@ -588,13 +589,6 @@ def clear_tables(event_id):
         db.session.commit()
 
     return redirect(('/event={}/table-assignments/').format(event_id))
-
-
-def is_not_logged_in():
-    if not session.get('user_id'):
-        flash('You are currently not logged in')
-        return True
-    return False
  
 
 @app.route('/dynamic-table-display')
@@ -603,6 +597,27 @@ def display_tables_dynamically():
     is_not_logged_in()
 
     return render_template('/dynamic-table-display.html')
+
+#############################################################################
+#Helper functions
+
+def code_to_phrase(relationship_code):
+    '''Turns the relationship code into html friendly text'''
+    if (relationship_code == "must"):
+        return "Must Sit Together"
+    elif (relationship_code == "must_not"):
+        return "Must Not Sit Together"
+    elif (relationship_code == "want"):
+        return "Wants to Sit Together"
+    else:
+        return "Unknown Relationship"
+
+def is_not_logged_in():
+    '''Checks to see if the user is not logged in'''
+    if not session.get('user_id'):
+        flash('You are currently not logged in')
+        return True
+    return False
         
 
 
@@ -611,7 +626,7 @@ if __name__ == "__main__":
     # that we invoke the DebugToolbarExtension
 
     # Do not debug for demo
-    app.debug = False
+    app.debug = True
 
     connect_to_db(app)
 

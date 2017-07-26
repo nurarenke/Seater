@@ -18,8 +18,8 @@ def store_users():
     # delete any previous users
     User.query.delete()
 
-    fake_users = [("nura@gmail.com", "password", Nura Renke),
-    ("burger@gmail.com", "password", Burger Christopher),
+    fake_users = [("nura@gmail.com", "password", 'Nura Renke'),
+    ("burger@gmail.com", "password", 'Christopher'),
     ("chris@gmail.com", "password", fake.name()),
     ("ticket@gmail.com", "password", fake.name()),
     ("erby@gmail.com", "password", fake.name())]
@@ -78,34 +78,82 @@ def store_attendees(event):
         # taking the passed argument of our gala dinner and adding it to each attendee
         attendee.event = event
 
+def create_example_data():
+
+    # add fake users to database
+    store_users()
+
+    # grab the first user 
+    event_owner = User.query.first()
+
+    # add a fake event to the database
+    gala_dinner = Event(event_name='Gala Dinner',
+                        event_description='Fundraiser', 
+                        location='Four Seasons')
+
+    # match the user id to the event
+    gala_dinner.user_id = event_owner.user_id
+
+    # add attendees to the event
+    store_attendees(gala_dinner)
+
+    # commit our changes and add the event
+    db.session.add(gala_dinner)
+    db.session.commit()
+
+    t_one = Table(table_name='Test Table', max_seats=10, event_id=gala_dinner.event_id)
+    t_two = Table(table_name='Test Table Two', max_seats=10, event_id=gala_dinner.event_id)
+    t_three = Table(table_name='Test Table Three', max_seats=10, event_id=gala_dinner.event_id)
+    t_four = Table(table_name='Test Table Four', max_seats=10, event_id=gala_dinner.event_id)
+    t_five = Table(table_name='Test Table Five', max_seats=10, event_id=gala_dinner.event_id)
+
+    db.session.add_all([t_one, t_two, t_three, t_four, t_five])
+    db.session.commit() 
+
+    r_one = SeatingRelationship(primary_attendee=1,
+     secondary_attendee=2, 
+     relationship_code='must')
+    db.session.add(r_one)
+    db.session.commit()
+
+    r_two = SeatingRelationship(primary_attendee=3,
+     secondary_attendee=4, 
+     relationship_code='must')
+    db.session.add(r_two)
+    db.session.commit()
+
+    r_three = SeatingRelationship(primary_attendee=5,
+     secondary_attendee=6, 
+     relationship_code='must')
+    db.session.add(r_three)
+    db.session.commit()
+
+    r_four = SeatingRelationship(primary_attendee=8,
+     secondary_attendee=9, 
+     relationship_code='must')
+    db.session.add(r_four)
+    db.session.commit()
+
+    r_five = SeatingRelationship(primary_attendee=6,
+     secondary_attendee=7, 
+     relationship_code='must_not')
+    db.session.add(r_five)
+    db.session.commit()
+
+    r_six = SeatingRelationship(primary_attendee=7,
+     secondary_attendee=4, 
+     relationship_code='want')
+    db.session.add(r_six)
+    db.session.commit()
+
+    # import pdb; pdb.set_trace()
+
+
 
 if __name__ == "__main__":
     connect_to_db(app)
 
-# add fake users to database
-store_users()
-
-# grab the first user 
-event_owner = User.query.first()
-
-# delete any previous events
-Event.query.delete()
-
-# add a fake event to the database
-gala_dinner = Event(event_name='Gala Dinner',
-                    event_description='Fundraiser', 
-                    location='Four Seasons')
-
-# match the user id to the event
-gala_dinner.user = event_owner
-
-# add attendees to the event
-store_attendees(gala_dinner)
-
-# commit our changes and add the event
-db.session.add(gala_dinner)
-db.session.commit()
-
+    
    
     
    

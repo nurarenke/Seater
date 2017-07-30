@@ -32,7 +32,7 @@ Homepage for a logged in user showing a list of events.
 
 Event info page.
 
-<img src="/static/event_info.png"/>
+<img src="/static/event_info_page.png"/>
 
 Attendee info and create relationships page.
 
@@ -42,7 +42,7 @@ Table assignments page.
 
 <img src="/static/tables.png"/>
 
-Component Files of Note
+## Component Files of Note
 
 `server.py` contains the the routes accessible directly by the user, as well as those accessed asynchronously to provide data to the client.
 

@@ -6,9 +6,13 @@ Seater is the project of Nura Renke while a student at [Hackbright Academy](http
 
 # Overview & Features
 
-Seater is a dynamic seating app for event planning that uses a sophisticated algorithm to seat your guests instantly based on their relationships.
+Seater is a dynamic seating app for event planning that uses a sophisticated algorithm to seat your guests instantly based on their relationships. My motivation for the project comes from my background in event planning. One of the challenges of planning any type of event is the seating chart. I wanted to make it easier on the user and create those seating arrangments based on relationships, the number of tables, and the number of attendees.
 
-# Tech Stack
+There are three types of relationships between attendees: "must sit with", "want to sit with", and "must not sit with". The "must sit with" relationships take priority, while the "want to sit with" are optional. However, there are a few "must not sit withs" at every event and those cannot be broken in order to have a succesful event. 
+
+The user can also create and edit any number of attendees and tables. A user can also have multiple events, which hold all of the attendees, tables, relationships, and table assignments for each indiviudal event.
+
+## Tech Stack
 
 Server: Python, Flask with Jinja templates
 
@@ -20,7 +24,7 @@ Frontend: CSS, Javascript, JQuery, Bootstrap, HTML5
 
 Testing: Unittest
 
-# Screenshots
+## Screenshots
 
 Homepage
 

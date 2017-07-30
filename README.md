@@ -2,7 +2,7 @@
 
 <img src="/static/seater_logo.png" width="200" height="200"/>
 
-Seater is the project of Nura Renke while a student at Hackbright Academy in San Francisco, August 2017.
+Seater is the project of Nura Renke while a student at [Hackbright Academy](https://hackbrightacademy.com/) in San Francisco, August 2017.
 
 # Overview & Features
 
@@ -23,8 +23,11 @@ Testing: Unittest
 # Screenshots
 
 Homepage
-<img src="/static/log_in_screen.png" width="500" height="200"/>
+
+<img src="/static/log_in_screen.png"/>
 
 Homepage for a logged in user showing a list of events.
 
-<img src="/static/events_page.png" width="500" height="200"/>
+<img src="/static/events_page.png"/>
+
+<img src="https://media.giphy.com/media/12jcGrz1ATk2EU/giphy.gif"/>

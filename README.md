@@ -30,4 +30,22 @@ Homepage for a logged in user showing a list of events.
 
 <img src="/static/events_page.png"/>
 
-<img src="https://media.giphy.com/media/12jcGrz1ATk2EU/giphy.gif"/>
+Event info page.
+
+<img src="/static/event_info.png"/>
+
+Attendee info and create relationships page.
+
+<img src="/static/attendee_page.png"/>
+
+Table assignments page.
+
+<img src="/static/tables.png"/>
+
+Component Files of Note
+
+`server.py` contains the the routes accessible directly by the user, as well as those accessed asynchronously to provide data to the client.
+
+`model.py` provides the data model associated with user interaction and database storage: Events, Attendees, Tables, Relationships, Users, etc.
+
+`assignments.py` provides the algorithm for seating arrangement. Based on attendees, tables and relationships for a particular event, the algorithm builds clusters of attendees that all mutually have to sit with each other via the "must" relationships.The algorithm then recursively seats each cluster at the table that has both the most open seats as well as the most fulfilled optional “want” relationships with people already seated at the tables. And of course, the algorithm also checks if that table has someone that the attendee must not sit with, the algorithm will never break that rule.

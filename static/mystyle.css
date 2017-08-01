@@ -6,6 +6,12 @@ body {
     
 }
 
+#flash-messages{
+
+    width:90%; 
+    margin:1cm;
+}
+
 .navbar-color{
     background-color:#aac9c7 !important;
 }
@@ -56,8 +62,52 @@ body {
     margin-bottom: 5px;
 }
 
-#relation-delete{
 
-    margin-top:0.5cm;
-    margin-bottom:0.5cm;
+#edit-event {
+
+    margin-top: 1em;
+}
+
+#edit-event-btn{
+
+    margin-bottom: 0px;
+}
+
+#relationship-submit{
+
+    margin-bottom: 0px;    
+}
+
+#established-relationships-div{
+
+    display: inline-block; 
+    width: 100%;
+}
+
+#established-relationships-form{
+
+    float:right;
+}
+
+#established-relationships-btn{
+
+    margin-top:3px;
+    margin-left: 1em
+
+}
+
+#established-relationships-link{
+
+    overflow: hidden;
+}
+
+#create-assignments-btn{
+
+    float: left;
+}
+
+#clear-assignments-btn{
+
+    float: left; 
+    margin-left: 1em;
 }

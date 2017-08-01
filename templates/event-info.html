@@ -12,9 +12,9 @@
         <div>Location: {{ event.location }}</div>
         <div>Time: {{ event.time }}</div>
         <!--Edit event button-->
-        <div style="margin-top: 1em">
+        <div id='edit-event'>
           <a href="/event={{ event.event_id }}/update-event">
-            <button type="button" class="btn btn-primary" style="margin-bottom: 0px">Edit Event</button>
+            <button type="button" class="btn btn-primary" id="edit-event-btn">Edit Event</button>
           </a>
         </div>
         <!--End of event info div-->
@@ -71,7 +71,7 @@
       </div>
       
       <!--View table assignments button-->
-      <div class="well spaced" style="width:80%;">
+      <div class="well spaced">
         <h2>Table Assignments</h2>
         <a href="/event={{ event.event_id }}/table-assignments/"><button type="button" class="btn btn-primary">View Table Assignments</button></a>
       </div>

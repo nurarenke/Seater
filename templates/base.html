@@ -49,7 +49,7 @@
 <!--Display flash messages-->
 <div id="extending">
   {% for flash in get_flashed_messages() %}
-    <div class="alert alert-danger" style="width:90%; margin:0 auto;">
+    <div class="alert alert-danger" id="flash-messages">
       {{ flash }}
     </div>
   {% endfor %}

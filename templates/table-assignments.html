@@ -15,10 +15,10 @@ $(document).ready(function() {
         <!--Display seating arrangements-->
         <div class="col-md-12 col-lg-12">
           <h2>Table Assignments</h2>
-            <form style="float: left" action='/event={{ event_id }}/table-assignments/' method="POST">
+            <form id="create-assignments-btn" action='/event={{ event_id }}/table-assignments/' method="POST">
                 <button type='submit' class="btn btn-primary">Create New Seating Assignments</button>
             </form>
-            <form style="float: left; margin-left: 1em" action='/event={{ event_id }}/clear-table-assignments/' method="POST">
+            <form id="clear-assignments-btn" action='/event={{ event_id }}/clear-table-assignments/' method="POST">
                 <button type='submit' class="btn btn-primary">Clear Seating Assignments</button>
             </form>
         </div> 

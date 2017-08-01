@@ -157,7 +157,7 @@ $(document).ready(function() {
               </select>
             </div>
             <div>
-              <button style="margin-bottom: 0px" type='submit' class="btn btn-primary">Submit</button>
+              <button id="relationship-submit" type='submit' class="btn btn-primary">Submit</button>
             </div>
           </form>
         </div>
@@ -167,11 +167,11 @@ $(document).ready(function() {
           {% if relationships_with_attendee %}
           <ul class="list-group">
               {% for secondary_attendee, relationship_code in relationships_with_attendee %}
-              <div style="display: inline-block; width: 100%">
-                <form action='/event={{ event_id }}/delete-attendee/{{attendee.attendee_id}}/{{ secondary_attendee.attendee_id }}' style="float:right" method='POST'>
-                  <button type='submit' class="btn btn-primary" style="margin-top:3px; margin-left: 1em" id="relation-delete">Delete</button>
+              <div id="established-relationships-div">
+                <form action='/event={{ event_id }}/delete-attendee/{{attendee.attendee_id}}/{{ secondary_attendee.attendee_id }}' id="established-relationships-form" method='POST'>
+                  <button type='submit' class="btn btn-primary" id="established-relationships-btn">Delete</button>
                 </form>
-                <a  style="overflow: hidden" class="list-group-item list-group-item-action" href='/attendee/{{ event_id }}/{{ secondary_attendee.attendee_id }}'>
+                <a id="established-relationships-link" class="list-group-item list-group-item-action" href='/attendee/{{ event_id }}/{{ secondary_attendee.attendee_id }}'>
                 {{ secondary_attendee.first_name }} {{ secondary_attendee.last_name }} - {{ relationship_code }} 
                 </a>
               </div>

@@ -141,13 +141,7 @@ def display_edit_event(event_id):
     if is_not_logged_in():
         return redirect('/')
 
-    # This query returns a tuple
-    event_user_id = db.session.query(Event.user_id).filter(
-        Event.event_id==event_id).first()
-
-    #if user session doesn't equal the event's user id
-    if session["user_id"] != event_user_id[0]:
-        flash("That is another user's event")
+    if is_not_user(event_id):
         return redirect('/events')
 
     event = Event.query.filter_by(event_id=event_id).first()
@@ -210,6 +204,9 @@ def display_event_info(event_id):
     if is_not_logged_in():
         return redirect('/')
 
+    if is_not_user(event_id):
+        return redirect('/events')
+
     event = Event.query.get(event_id)
 
     attendees = Attendee.query.filter_by(event_id=event_id).all()
@@ -267,6 +264,9 @@ def new_attendee(event_id):
     '''Shows an empty attendee info page for filling out to make a new attendee.'''
     if is_not_logged_in():
         return redirect('/')
+
+    if is_not_user(event_id):
+        return redirect('/events')
 
     event = Event.query.get(event_id)
     attendee = None
@@ -339,6 +339,10 @@ def display_attendee(event_id, attendee_id):
     '''Show info about user and relationships.'''
     if is_not_logged_in():
         return redirect('/')
+
+    if is_not_user(event_id):
+        return redirect('/events')
+
 
     event = Event.query.filter_by(event_id=event_id).first()
     event_id = event_id
@@ -432,6 +436,13 @@ def update_relationship(attendee_id, event_id):
 
 @app.route('/event=<int:event_id>/new-table/', methods=['GET'])
 def new_table(event_id):
+
+    if is_not_logged_in():
+        return redirect('/')
+
+    if is_not_user(event_id):
+        return redirect('/events')
+
     event = Event.query.get(event_id)
     table = None
     event_id = event_id
@@ -514,6 +525,12 @@ def table_detail(event_id, table_id):
     if is_not_logged_in():
         return redirect('/')
 
+    if is_not_user(event_id):
+        return redirect('/events')
+
+    if is_not_table(event_id, table_id):
+        return redirect('/events')
+
     event = Event.query.get(event_id)
     event_id = event_id
 
@@ -566,6 +583,10 @@ def display_tables(event_id):
     '''display tables'''
     if is_not_logged_in():
         return redirect('/')
+
+    if is_not_user(event_id):
+        return redirect('/events')
+
     event = Event.query.get(event_id)
     event_id=event_id
     # query for all of attendees who are assigned to a table
@@ -601,8 +622,9 @@ def clear_tables(event_id):
 
 @app.route('/dynamic-table-display')
 def display_tables_dynamically():
-    '''Display tables dynamically'''
-    is_not_logged_in()
+    '''TBD Display tables dynamically'''
+    if is_not_logged_in():
+        return redirect('/')
 
     return render_template('/dynamic-table-display.html')
 
@@ -611,6 +633,7 @@ def display_tables_dynamically():
 
 def code_to_phrase(relationship_code):
     '''Turns the relationship code into html friendly text'''
+
     if (relationship_code == "must"):
         return "Must Sit Together"
     elif (relationship_code == "must_not"):
@@ -622,11 +645,36 @@ def code_to_phrase(relationship_code):
 
 def is_not_logged_in():
     '''Checks to see if the user is not logged in'''
+
     if not session.get('user_id'):
         flash('You are currently not logged in')
         return True
     return False
-        
+
+def is_not_user(event_id):
+    '''Checks to see if the event id matches the user id'''
+
+    # This query returns a tuple
+    event_user_id = db.session.query(Event.user_id).filter(
+        Event.event_id==event_id).first()
+
+    #if user session doesn't equal the event's user id
+    if session["user_id"] != event_user_id[0]:
+        flash("That is another user's event")
+        return True
+    return False
+
+def is_not_table(event_id, table_id):
+    '''Checks to see if the table belongs to the user'''
+
+    table_event_user_id = db.session.query(Event.user_id).filter(
+        Event.event_id == event_id, Table.table_id == table_id).join(Table).all()
+
+    if session["user_id"] != table_event_user_id[0][0]:
+        flash("That is another user's table")
+        return True
+    return False
+
 
 
 if __name__ == "__main__":

@@ -141,6 +141,15 @@ def display_edit_event(event_id):
     if is_not_logged_in():
         return redirect('/')
 
+    # This query returns a tuple
+    event_user_id = db.session.query(Event.user_id).filter(
+        Event.event_id==event_id).first()
+
+    #if user session doesn't equal the event's user id
+    if session["user_id"] != event_user_id[0]:
+        flash("That is another user's event")
+        return redirect('/events')
+
     event = Event.query.filter_by(event_id=event_id).first()
     return render_template('edit-event.html',
                             event=event)

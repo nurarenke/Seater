@@ -34,7 +34,7 @@ def register_process():
 
     # Get form variables
     email = request.form.get('email')
-    password = request.form.get('password').dec
+    password = request.form.get('password')
     name = request.form.get('name')
 
     # Check to see if the user is already registered
@@ -625,7 +625,7 @@ if __name__ == "__main__":
     # that we invoke the DebugToolbarExtension
 
     # Do not debug for demo
-    app.debug = False
+    app.debug = True
 
     connect_to_db(app)
 

@@ -152,6 +152,32 @@ def create_example_data():
 
 if __name__ == "__main__":
     connect_to_db(app)
+    db.create_all()
+
+    store_users()
+
+    # Grab the first user
+    event_owner = User.query.first()
+
+    # Delete any previous events
+    Event.query.delete()
+
+    # add a fake event to the database
+    gala_dinner = Event(event_name='Gala Dinner',
+                        event_description='Fundraiser', 
+                        location='Four Seasons')
+
+    # match the user id to the event
+    gala_dinner.user = event_owner
+
+    # add attendees to the event
+    store_attendees(gala_dinner)
+
+    # commit our changes and add the event
+    db.session.add(gala_dinner)
+    db.session.commit()
+
+
 
     
    

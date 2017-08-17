@@ -150,6 +150,8 @@ if __name__ == "__main__":
     connect_to_db(app)
     db.create_all()
 
+    User.query.delete()
+
     store_users()
 
     # Grab the first user
@@ -165,6 +167,8 @@ if __name__ == "__main__":
 
     # match the user id to the event
     gala_dinner.user = event_owner
+
+    Attendee.query.delete()
 
     # add attendees to the event
     store_attendees(gala_dinner)

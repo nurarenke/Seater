@@ -4,6 +4,8 @@
 
 Seater is the project of Nura Renke while a student at [Hackbright Academy](https://hackbrightacademy.com/) in San Francisco, August 2017.
 
+[Click here for a live demo of the app](http://nurarenke.com/)
+
 # Overview & Features
 
 Seater is a dynamic seating app for event planning that uses a sophisticated algorithm to seat your guests instantly based on their relationships. My motivation for the project comes from my background in event planning. One of the challenges of planning any type of event is the seating chart. I wanted to make it easier on the user and create those seating arrangments based on relationships, the number of tables, and the number of attendees.
@@ -23,6 +25,8 @@ Backend/Algorithms: Python implementations of custom algorithms
 Frontend: CSS, Javascript, JQuery, Bootstrap, HTML5
 
 Testing: Unittest
+
+Hosted: AWS Lightsail
 
 ## Screenshots
 

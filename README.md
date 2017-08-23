@@ -26,7 +26,7 @@ Frontend: CSS, Javascript, JQuery, Bootstrap, HTML5
 
 Testing: Unittest
 
-Hosted: AWS Lightsail
+Hosted on AWS Lightsail
 
 ## Screenshots
 

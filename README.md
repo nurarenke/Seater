@@ -51,6 +51,7 @@ Table assignments page.
 <img src="/static/tables.png"/>
 
 Data Model Schema.
+
 <img src="/static/data_model.png"/>
 
 ## Component Files of Note

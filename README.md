@@ -50,6 +50,9 @@ Table assignments page.
 
 <img src="/static/tables.png"/>
 
+Data Model Schema.
+<img src="/static/data_model.png"/>
+
 ## Component Files of Note
 
 `server.py` contains the the routes accessible directly by the user, as well as those accessed asynchronously to provide data to the client.

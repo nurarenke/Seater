@@ -8,7 +8,7 @@ Click here for a video presenation of the app.
 
 Video Demo: [Seater presentation on YouTube](https://youtu.be/P98T6F3sqf4)
 
-Live Demo: [seater.nurarenke.com](http://seater.nurarenke.com)
+Live Demo hosted on AWS: [seater.nurarenke.com](http://seater.nurarenke.com)
 
 # Overview & Features
 

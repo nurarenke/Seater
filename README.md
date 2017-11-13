@@ -1,12 +1,10 @@
 # Seater
 
-https://youtu.be/P98T6F3sqf4
-
 <img src="/static/seater_logo.png" width="200" height="200"/>
 
 Seater is the project of Nura Renke while a student at [Hackbright Academy](https://hackbrightacademy.com/) in San Francisco, August 2017.
 
-[![Click here for an overview of the app] ("/static/seater_demo_video")](https://youtu.be/P98T6F3sqf4)
+![alt text](/static/seater_demo_video "Click here for a presentation of the app")(https://youtu.be/P98T6F3sqf4)
 
 [Click here for a live demo of the app](http://nurarenke.com/)
 

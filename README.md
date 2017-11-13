@@ -1,14 +1,18 @@
 # Seater
 
+https://youtu.be/P98T6F3sqf4
+
 <img src="/static/seater_logo.png" width="200" height="200"/>
 
 Seater is the project of Nura Renke while a student at [Hackbright Academy](https://hackbrightacademy.com/) in San Francisco, August 2017.
+
+[Click here for an overview of the app](<img src="/static/seater_demo_video">)
 
 [Click here for a live demo of the app](http://nurarenke.com/)
 
 # Overview & Features
 
-Seater is a dynamic seating app for event planning that uses a sophisticated algorithm to seat your guests instantly based on their relationships. My motivation for the project comes from my background in event planning. One of the challenges of planning any type of event is the seating chart. I wanted to make it easier on the user and create those seating arrangments based on relationships, the number of tables, and the number of attendees.
+Seater is a dynamic seating app for event planning that uses a sophisticated algorithm to seat your guests instantly based on their relationships. My motivation for the project comes from my background in event planning. One of the challenges of planning any type of event is the seating chart. I wanted to make it easier on the user and create those seating arrangements based on relationships, the number of tables, and the number of attendees.
 
 There are three types of relationships between attendees: "must sit with", "want to sit with", and "must not sit with". The "must sit with" relationships take priority, while the "want to sit with" are optional. However, there are a few "must not sit withs" at every event and those cannot be broken in order to have a succesful event. 
 
